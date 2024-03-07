@@ -1,8 +1,14 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 
+# Django library User model, authentication, 
+
 class UserTable(models.Model):
+    # This line links UserTable to a User model instance.
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
     UserId = models.CharField(max_length=8)
     FirstName = models.CharField(max_length=128)
     LastName = models.CharField(max_length=128)
@@ -15,12 +21,12 @@ class PubTable(models.Model):
     Pub_Name = models.CharField(max_length=128)
     City = models.CharField(max_length=128)
     Street_Name = models.CharField(max_length=128)
-    Postcode = models.CharField(max_length=6)
+    Postcode = models.CharField(max_length=7) # 7 chars long, longest postcode is "AB123YZ" format
     UserID = models.ForeignKey(UserTable)
 
 class QuestionTable(models.Model):
     Question_Number = models.CharField(max_length=8)
-    Date = models.models.DateField()
+    Date = models.DateField()
     Context = models.CharField(max_length=1000)
     PubID = models.ForeignKey(PubTable)
     UserID = models.ForeignKey(UserTable)
@@ -34,7 +40,7 @@ class ReviewTable(models.Model):
 
 class AnswerTable(models.Model):
     Answer_Number = models.CharField(max_length=8)
-    Date = models.models.DateField()
+    Date = models.DateField()
     Context = models.CharField(max_length=1000)
     Question_Number = models.ForeignKey(QuestionTable)
     UserID = models.ForeignKey(UserTable)
