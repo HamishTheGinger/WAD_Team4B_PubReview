@@ -18,7 +18,7 @@ urlpatterns = [
     path('pubs/<slug:pub_name_slug>/reviews/<int:review_id>',views.show_review,name="review_page"),
 
     # Question URLs
-    path('questions/',views.list_questions,name="list_questions"),
+    path('questions/',views.list_questions,name="questions"),
     path('questions/<int:question_id>/',views.show_question,name="show_question"),
     path('questions/<int:question_id>/add_answer/',views.add_answer,name="add_answer"),
     path('questions/<int:question_id/<int:answer_id>/edit/',views.edit_answer,name="edit_answer"),

@@ -36,7 +36,7 @@ def show_review(request):
 def list_questions(request):
     return HttpResponse("<h1>To be made</h1>")
 
-def show_questions(request):
+def show_question(request):
     return HttpResponse("<h1>To be made</h1>")
 
 def add_answer(request):
