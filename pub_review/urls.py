@@ -1,7 +1,7 @@
 from django.urls import path
 from pub_review import views
 
-app_name = "pub_reviews"
+app_name = "pub_review"
 
 urlpatterns = [
     path('',views.index,name="index"),
@@ -9,7 +9,7 @@ urlpatterns = [
 
     # Pub URLs
     path('pubs/',views.pubs,name="pubs"),
-    path('pubs/add_pub/',views.add_pubs,name="add_pubs"),
+    path('pubs/add_pub/',views.add_pub,name="add_pubs"),
     path('pubs/<slug:pub_name_slug>/',views.show_pub,name="pub_page"),
     path('pubs/<slug:pub_name_slug>/edit/',views.edit_pub,name="edit_pub_page"),
 
