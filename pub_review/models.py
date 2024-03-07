@@ -3,15 +3,14 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 
-# Django library User model, authentication, 
-
 class UserTable(models.Model):
     # This line links UserTable to a User model instance.
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     UserId = models.CharField(max_length=8)
-    FirstName = models.CharField(max_length=128)
-    LastName = models.CharField(max_length=128)
+    # These are commented out as they are stored in the django models.User table
+    #FirstName = models.CharField(max_length=128)
+    #LastName = models.CharField(max_length=128)
     Sex = models.CharField(max_length=10)
     Age = models.IntegerField(default=0)
     Nationality = models.CharField(max_length=40)
