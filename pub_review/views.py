@@ -84,7 +84,7 @@ def show_reviews(request):
 
 @login_required # maybe can be done by hiding like button, instead of this way.
 def like_review_view(request):
-    # This will be JS function to add the like button functionality to the 
+    # This will be JS function to add the like button functionality to the reviews
     
     return HttpResponse("<h1>To be made</h1>")
 
@@ -99,6 +99,7 @@ def show_question(request):
 
 @login_required
 def add_answer(request):
+
     return HttpResponse("<h1>To be made</h1>")
 
 @login_required
@@ -106,6 +107,8 @@ def edit_answer(request):
     return HttpResponse("<h1>To be made</h1>")
 
 def user_profile(request):
+    # This could maybe call a helper function, which is passed the request
+
     #qeury Top5pub filter by UserID, get list of pub IDs, use those to reference PubTable for list of pubs.
     context_dict = {}
 
@@ -171,7 +174,7 @@ def register(request):
         user_form = UserForm()
         profile_form = UserProfileForm()
     
-    return render(request, 'pub_review/register.html', context={'user_form': user_form, 'profile_form': profile_form, 'registered': registered})
+    return render(request, 'pub_review:register', context={'user_form': user_form, 'profile_form': profile_form, 'registered': registered})
 
 @login_required
 def user_logout(request):
