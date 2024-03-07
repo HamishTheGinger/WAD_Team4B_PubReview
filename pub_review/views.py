@@ -5,6 +5,15 @@ from django.http import HttpResponse
 # Create your views here.
 def index(request):
     context_dict = {}
+
+    # get list of top 5 pubs
+    pub_list =  Pub.objects.order_by('-review_score')[:5]
+    context_dict['top_pubs_list'] = pub_list
+
+    # get list of recent reviews
+    reviews = Review.objects.order_by('-Date')[:10]
+    context_dict['recent_reviews_list'] = reviews
+
     return render(request, 'pub_review/index.html', context= context_dict)
 
 def placeholder(request):
