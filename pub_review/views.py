@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-
+from pub_review.models import Pub, Review, Question, Answer, User
 
 # Create your views here.
 def index(request):
