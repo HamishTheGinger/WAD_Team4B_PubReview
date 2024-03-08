@@ -106,14 +106,24 @@ def add_answer(request):
 def edit_answer(request):
     return HttpResponse("<h1>To be made</h1>")
 
-def user_profile(request):
+def user_profile(request, user_id):
     # This could maybe call a helper function, which is passed the request
 
     #qeury Top5pub filter by UserID, get list of pub IDs, use those to reference PubTable for list of pubs.
     context_dict = {}
 
-    # Here I cannot figure out how to get the top 5 pubs for any given user using just the request, as UserID here is not tied to anything other than URL.
-    #top5 = Top5_PubTable.objects.filter(userID = )
+    try:
+        user = UserTable.objects.get(id=user_id) #get the attributes of the user with the id user_id
+        user_top_5 = Top5_PubTable.objects.get(UserID=user_id) #get all the pubs of the user in the top_5_pubs table
+
+        context_dict["user"] = user
+        context_dict["top_5"]= user_top_5
+
+    except UserTable.DoesNotExist:
+        context_dict["user"] = None
+        context_dict["top_5"]= None
+
+    #return render(request, 'pub_review/user_profile.html', context_dict)
     return HttpResponse("<h1>To be made</h1>")
 
 def user_profile_reviews(request):
