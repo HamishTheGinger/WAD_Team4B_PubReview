@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from pub_review.models import PubTable, ReviewTable, QuestionTable, AnswerTable, UserTable, Top5_PubTable
-from pub_review.forms import AddPubForm, UserForm, UserProfileForm, EditPubForm, AddAnswerForm, EditAnswerFrom, ReviewForm, EditReviewForm
+#from pub_review.forms import AddPubForm, UserForm, UserProfileForm, EditPubForm, AddAnswerForm, EditAnswerFrom, ReviewForm, EditReviewForm
 
 # Create your views here.
 def index(request):
@@ -113,7 +113,7 @@ def user_profile(request):
     context_dict = {}
 
     # Here I cannot figure out how to get the top 5 pubs for any given user using just the request, as UserID here is not tied to anything other than URL.
-    top5 = Top5_PubTable.objects.filter(userID = )
+    #top5 = Top5_PubTable.objects.filter(userID = )
     return HttpResponse("<h1>To be made</h1>")
 
 def user_profile_reviews(request):

@@ -21,30 +21,30 @@ class PubTable(models.Model):
     City = models.CharField(max_length=128)
     Street_Name = models.CharField(max_length=128)
     Postcode = models.CharField(max_length=7) # 7 chars long, longest postcode is "AB123YZ" format
-    UserID = models.ForeignKey(UserTable)
+    UserID = models.ForeignKey(UserTable,null=True,on_delete=models.SET_NULL)
 
 class QuestionTable(models.Model):
     Question_Number = models.CharField(max_length=8)
     Date = models.DateField()
     Context = models.CharField(max_length=1000)
-    PubID = models.ForeignKey(PubTable)
-    UserID = models.ForeignKey(UserTable)
+    PubID = models.ForeignKey(PubTable, on_delete=models.CASCADE)
+    UserID = models.ForeignKey(UserTable,null=True, on_delete=models.SET_NULL)
 
 class ReviewTable(models.Model):
     Review_Number = models.CharField(max_length=8)
     Rating = models.IntegerField(default=0)
     Context = models.CharField(max_length=1000)
     Date = models.DateField()
-    PubID = models.ForeignKey(PubTable)
+    PubID = models.ForeignKey(PubTable, on_delete=models.CASCADE)
 
 class AnswerTable(models.Model):
     Answer_Number = models.CharField(max_length=8)
     Date = models.DateField()
     Context = models.CharField(max_length=1000)
-    Question_Number = models.ForeignKey(QuestionTable)
-    UserID = models.ForeignKey(UserTable)
+    Question_Number = models.ForeignKey(QuestionTable,on_delete=models.CASCADE)
+    UserID = models.ForeignKey(UserTable,null=True,on_delete=models.SET_NULL)
 
 class Top5_PubTable(models.Model):
-    UserID = models.ForeignKey(UserTable)
-    PubID = models.ForeignKey(PubTable)
+    UserID = models.ForeignKey(UserTable,on_delete=models.CASCADE)
+    PubID = models.ForeignKey(PubTable,on_delete=models.CASCADE)
 
