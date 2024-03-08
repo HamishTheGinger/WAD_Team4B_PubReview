@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container my-3">
+
+<!-- Question Object -->
+  <h2 class="border-bottom py-2">{{ question.subject }}</h2>
+  <div class="card my-3">
+    <div class="card-body">
+      <div class="card-text" style="white-space: pre-line;">
+        {{ question.content }}
+      </div>
+      <div class="d-flex justify-content-end">
+        <div class="badge badge-light p-2">
+          {{ question.create_date }}
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- Question Object End -->
+
+<!-- Answer Object -->
+  <h5 class="border-bottom my-3 py-2">
+    There are {{ question.answer_set.count }} answers
+  </h5>
+  {% for answer in question.answer_set.all %}
+  <div class="card my-3">
+    <div class="card-body">
+      <div class="card-text" style="white-space:pre-line;">
+        {{ answer.content }}
+      </div>
+      <div class="d-flex justify-content-end">
+        <div class="badge badge-light p-2">
+          {{ answer.create_date }}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+<!-- Answer Object End -->
+
+<!-- Post Answer -->
+  <form action="{% url 'pub_review:answer_create' question.id %}" method = 'post' class ="my-3">
+    {% csrf_token %}
+
+<!-- Function : Handle None value error -->
+    {% if form.errors.content %}
+    <div class="alert alert-danger" role="alert">
+      {% for field in form %}
+        {% if field.errors %}
+        <strong>{{ field.label }}</strong>
+        {{ field.errors }}
+        {% endif %}
+      {% endfor %}
+    </div>
+    {% endif %}
+
+<!-- Function End -->
+    <div class = "form-group">
+      <textarea name="content" id="content" class="form-control" rows="10"></textarea>
+    </div>
+    <input type="submit" value="Submit" class="btn btn-primary">
+  </form>
+</div>
+{% endblock %}
+
