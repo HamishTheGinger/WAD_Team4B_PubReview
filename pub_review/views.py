@@ -3,6 +3,8 @@ from django.http import HttpResponse
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
+
 from pub_review.models import PubTable, ReviewTable, QuestionTable, AnswerTable, UserTable, Top5_PubTable
 #from pub_review.forms import AddPubForm, UserForm, UserProfileForm, EditPubForm, AddAnswerForm, EditAnswerFrom, ReviewForm, EditReviewForm
 
@@ -92,7 +94,18 @@ def show_review(request):
     return HttpResponse("<h1>To be made</h1>")
 
 def list_questions(request):
-    return HttpResponse("<h1>To be made</h1>")
+    page = request.GET.get('page', 1)  # Page
+    question_list = QuestionTable.objects.order_by('-Date')
+
+    # Paging
+    paginator = Paginator(question_list, 10)
+    page_obj = paginator.get_page(page)
+
+    context = {'question_list': page_obj}
+    return render(request, 'pub_review/Q&A.html', context)
+
+def add_question(request):
+        return HttpResponse("<h1>To be made</h1>")
 
 def show_question(request):
     return HttpResponse("<h1>To be made</h1>")

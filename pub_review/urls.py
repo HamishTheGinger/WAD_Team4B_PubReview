@@ -19,6 +19,7 @@ urlpatterns = [
 
     # Question URLs
     path('questions/',views.list_questions,name="questions"),
+    path('questions/add/',views.add_question,name="add_question"),
     path('questions/<int:question_id>/',views.show_question,name="show_question"),
     path('questions/<int:question_id>/add_answer/',views.add_answer,name="add_answer"),
     path('questions/<int:question_id/<int:answer_id>/edit/',views.edit_answer,name="edit_answer"),
