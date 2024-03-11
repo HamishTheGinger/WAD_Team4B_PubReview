@@ -17,8 +17,8 @@
       </div>
       {% if request.user == question.author %}
         <div class="my-3">
-          <a href="{% url 'pub_review:question_modify' question.id %}" class="btn btn-sm btn-outline-secondary">Edit</a>
-          <a href="#" class="delete btn btn-sm btn-outline-secondary" data-uri="{% url 'pub_review:question_delete' question.id %}">Delete</a>
+          <a href="{% url 'pub_review:Pub_Question_modify' pub_id=pub.id Pub_Question_id=question.id %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+          <a href="#" class="delete btn btn-sm btn-outline-secondary" data-uri="{% url 'pub_review:Pub_Question_delete' pub_id=pub.id Pub_Question_id=question.id %}">Delete</a>
         </div>
       {% endif %}
     </div>
@@ -27,9 +27,9 @@
 
 <!-- Answer Object -->
   <h5 class="border-bottom my-3 py-2">
-    There are {{ question.answer_set.count }} answers
+    There are {{ question.pub_answer_set.count }} answers
   </h5>
-  {% for answer in question.answer_set.all %}
+  {% for answer in question.pub_answer_set.all %}
     <div class="card my-3">
       <div class="card-body">
         <div class="card-text" style="white-space:pre-line;">
@@ -37,17 +37,13 @@
         </div>
         <div class="d-flex justify-content-end">
           <div class="badge badge-light p-2">
-            <a href="{% url 'pub_review:userProfile' user_id=answer.author.id%}">{{ answer.author.username }}</a>
-          </div>
-          <div class="badge badge-light p-2">
             {{ answer.create_date }}
           </div>
-
         </div>
         {% if request.user == answer.author %}
         <div class="my-3">
-          <a href="{% url 'pub_review:answer_modify' answer.id %}" class="btn btn-sm btn-outline-secondary">Edit</a>
-          <a href="#" class="delete btn btn-sm btn-outline-secondary" data-uri="{% url 'pub_review:answer_delete' answer.id %}">Delete</a>
+          <a href="{% url 'pub_review:Pub_Answer_modify' pub_id=pub.id Pub_Question_id=question.id Pub_Answer_id=answer.id %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+          <a href="#" class="delete btn btn-sm btn-outline-secondary" data-uri="{% url 'pub_review:Pub_Answer_delete' pub_id=pub.id Pub_Question_id=question.id Pub_Answer_id=answer.id %}">Delete</a>
         </div>
       {% endif %}
       </div>
@@ -56,7 +52,7 @@
 <!-- Answer Object End -->
 
 <!-- Post Answer -->
-  <form action="{% url 'pub_review:answer_create' question.id %}" method = 'post' class ="my-3">
+  <form action="{% url 'pub_review:Pub_Answer_create' pub_id=pub.id Pub_Question_id=question.id %}" method = 'post' class ="my-3">
     {% csrf_token %}
 
 <!-- Function : Handle None value error -->
@@ -90,4 +86,3 @@ $(document).ready(function(){
 });
 </script>
 {% endblock %}
-

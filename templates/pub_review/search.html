@@ -1,10 +1,128 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
 
-</body>
-</html>
+<!-- Template filter for paging System -->
+{% load PubReviews_filter %}
+
+{% block content %}
+<!-- Top Heading -->
+<div class="container my-3">
+    <div class="col-4 input-group">
+            <input type="text" class="form-control kw" value="{{ kw|default_if_none:'' }}">
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="button" id="btn_search">Search</button>
+            </div>
+        </div>
+  <table class="table">
+    <thead>
+    <tr class="text-center thead - dark">
+      <th>Number</th>
+      <th style="width:50%">Pub Name</th>
+      <th>Owner</th>
+      <th>Postcode</th>
+    </tr>
+    </thead>
+<!-- Top Heading End -->
+    <tbody>
+
+<!-- Question list -->
+    {% if pub_list %}
+<!-- If there is a question -->
+    {% for pub in pub_list %}
+    <tr class="text-center">
+        <!-- For successive question ID -->
+        <td>{{ pub_list.paginator.count|sub:pub_list.start_index|sub:forloop.counter0|add:1 }}</td>
+
+        <!-- Question Object -->
+        <td class="text-left">
+            <a href="{% url 'pub_review:pubDetail' pub.id %}">{{pub.pubName}}</a>
+        </td>
+        <td>
+            <a href="{% url 'pub_review:userProfile' user_id=pub.owner.id%}">{{ pub.owner.username}}</a>
+        </td>
+        <td>
+            {{ pub.postcode}}
+        </td>
+        <!-- Question Object End-->
+    </tr>
+    {% endfor %}
+
+<!-- Else -->
+    {% else %}
+    <tr>
+        <td colspan="3"> NO pub</td>
+    </tr>
+    {% endif %}
+    </tbody>
+<!-- Question list End -->
+
+  </table>
+<!-- Function : Show 10 questions for each page -->
+    <ul class="pagination justify-content-center">
+        <!-- Previous Page -->
+        {% if pub_list.has_previous %}
+        <li class="page-item">
+            <a class="page-link" data-page="?page={{ pub_list.previous_page_number }}" href="#">Prev</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <a class="page-link" tabindex="-1" aria-disabled="true" href="#">Prev</a>
+        </li>
+        {% endif %}
+
+        <!-- Page List -->
+        {% for page_number in pub_list.paginator.page_range %}
+        {% if page_number >= pub_list.number|add:-5 and page_number <= pub_list.number|add:5 %}
+            {% if page_number == pub_list.number %}
+            <li class="page-item active" aria-current="page">
+                <a class="page-link" data-page="{{ page_number }}" href="#">{{ page_number }}</a>
+            </li>
+            {% else %}
+            <li class="page-item">
+                <a class="page-link" data-page="{{ page_number }}" href="#">{{ page_number }}</a>
+            </li>
+            {% endif %}
+        {% endif %}
+        {% endfor %}
+
+        <!-- Next Page -->
+        {% if pub_list.has_next %}
+        <li class="page-item">
+            <a class="page-link" data-page="{{ pub_list.next_page_number }}" href="#">Next</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <a class="page-link" tabindex="-1" aria-disabled="true" href="#">Next</a>
+        </li>
+        {% endif %}
+    </ul>
+    <a href = "{% url 'pub_review:pub_create' %}" class="btn btn-primary">
+        Upload a Pub
+    </a>
+</div>
+<form id="searchForm" method="get" action="{% url 'pub_review:search' %}">
+    <input type="hidden" id="kw" name="kw" value="{{ kw|default_if_none:'' }}">
+    <input type="hidden" id="page" name="page" value="{{ page }}">
+</form>
+{% endblock %}
+{% block script %}
+<script type='text/javascript'>
+$(document).ready(function(){
+    $(".page-link").on('click', function() {
+        $("#page").val($(this).data("page"));
+        $("#searchForm").submit();
+    });
+
+    $("#btn_search").on('click', function() {
+        $("#kw").val($(".kw").val());
+        $("#page").val(1);
+        $("#searchForm").submit();
+    });
+
+    $(".so").on('change', function() {
+        $("#so").val($(this).val());
+        $("#page").val(1);
+        $("#searchForm").submit();
+    });
+});
+</script>
+{% endblock %}
