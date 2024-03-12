@@ -1,0 +1,241 @@
+{% extends 'base.html' %}
+{% load PubReviews_filter %}
+{% block content %}
+<div class="container white-box">
+    {% if messages %}
+    <div class="alert alert-danger my-3" role="alert">
+    {% for message in messages %}
+        <strong>{{ message.tags }}</strong>
+        <ul><li>{{ message.message }}</li></ul>
+    {% endfor %}
+    </div>
+    {% endif %}
+      <div class="row">
+        <div class="col-md-8 profile-simple">
+          <div class="d-flex">
+            <div class="flex-shrink-0">
+              <h3>{{ pub.pubName }}</h3>
+              {% if pub.picture %}
+                <img src="{{ pub.picture.url }}" alt="{{ pub.pubName }}'s Profile Picture">
+              {% else %}
+                 <p>No profile picture available.</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 border-left">
+          <div class="row profile-detail">
+            <div class="col-6">
+                <h3>Owner</h3>
+                <p>{{ pub.owner }}</p>
+            </div>
+            <div class="col-6">
+                <h3>City</h3>
+                <p>{{ pub.city }}</p>
+            </div>
+            <div class="col-6">
+                <h3>Street</h3>
+                <p>{{ pub.streetName }}</p>
+            </div>
+            <div class="col-6">
+                <h3>Postcode</h3>
+                <p>{{ pub.postcode }}</p>
+            </div>
+              <div class="col-6">
+                <div class="bg-light text-center p-3 border font-weight-bolder mb-1">{{pub.voter.count}}</div>
+                    <a href="#" data-uri="{% url 'pub_review:vote_pub' pub.id  %}"
+                        class="recommend btn btn-sm btn-secondary btn-block my-1">Recommend</a>
+                </div>
+            </div>
+          </div>
+      </div>
+      <div class="row">
+          <div class="container my-3">
+            <h5>Reviews</h5>
+
+              <table class="table">
+                <thead>
+                <tr class="text-center thead - dark">
+                  <th>Number</th>
+                  <th style="width:50%" class="text-left">Subject</th>
+                  <th>Author</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% if review_list %}
+                {% for review in review_list %}
+                <tr class="text-center">
+                    <td>{{ review_list.paginator.count|sub:review_list.start_index|sub:forloop.counter0|add:1 }}</td>
+                    <td class="text-left">
+                        <a href="{% url 'pub_review:reviewDetail' pub.id review.id %}">{{ review.subject }}</a>
+                    </td>
+                    <td>
+                        <a href="{% url 'pub_review:userProfile' user_id=review.author.id %}">{{ review.author.username}}</a>
+                    </td>
+                    <!-- Question Object End-->
+                </tr>
+                {% endfor %}
+
+            <!-- Else -->
+                {% else %}
+                <tr>
+                    <td colspan="3">No Reviews</td>
+                </tr>
+                {% endif %}
+                </tbody>
+            <!-- Question list End -->
+
+              </table>
+            <!-- Function : Show 10 questions for each page -->
+                <ul class="pagination justify-content-center">
+                    <!-- Previous Page -->
+                    {% if review_list.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" data-page="?page1={{ review_list.previous_page_number }}" href="#">Prev</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link" tabindex="-1" aria-disabled="true" href="#">Prev</a>
+                    </li>
+                    {% endif %}
+
+                    <!-- Page List -->
+                    {% for page_number in review_list.paginator.page_range %}
+                    {% if page_number >= review_list.number|add:-5 and page_number <= review_list.number|add:5 %}
+                        {% if page_number == review_list.number %}
+                        <li class="page-item active" aria-current="page">
+                            <a class="page-link" data-page="{{ page_number }}" href="#">{{ page_number }}</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item">
+                            <a class="page-link" data-page="{{ page_number }}" href="#">{{ page_number }}</a>
+                        </li>
+                        {% endif %}
+                    {% endif %}
+                    {% endfor %}
+
+                    <!-- Next Page -->
+                    {% if review_list.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" data-page="{{ review_list.next_page_number }}" href="#">Next</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link" tabindex="-1" aria-disabled="true" href="#">Next</a>
+                    </li>
+                    {% endif %}
+                </ul>
+                <a href = "{% url 'pub_review:review_create' pub.id%}" class="btn btn-primary">
+                    Post a Review
+                </a>
+          </div>
+      </div>
+    <div class="container my-3">
+        <h5>Questions</h5>
+            <table class="table">
+                <thead>
+                    <tr class="text-center thead - dark">
+                        <th>Number</th>
+                        <th style="width:50%" class="text-left">Subject</th>
+                        <th>Author</th>
+                        <th>Post Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if question_list %}
+                    {% for question in question_list %}
+                    <tr class="text-center">
+                        <td>{{ question_list.paginator.count|sub:question_list.start_index|sub:forloop.counter0|add:1 }}</td>
+                        <td class="text-left">
+                            <a href="{% url 'pub_review:Pub_QuestionDetail' pub_id=pub.id Pub_Question_id=question.id %}">{{ question.subject }}</a>
+                        </td>
+                        <td>
+                            <a href="{% url 'pub_review:userProfile' user_id=question.author.id%}"> {{ question.author.username}}</a>
+                         </td>
+                         <td>
+                             {{ question.create_date}}
+                         </td>
+                        <!-- Question Object End-->
+                    </tr>
+                    {% endfor %}
+
+                <!-- Else -->
+                    {% else %}
+                    <tr>
+                        <td colspan="3">No Questions</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+                <!-- Question list End -->
+
+            </table>
+                <!-- Function : Show 10 questions for each page -->
+                <ul class="pagination justify-content-center">
+                        <!-- Previous Page -->
+                        {% if question_list.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" data-page="?page2={{ question_list.previous_page_number }}" href="#">Prev</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <a class="page-link" tabindex="-1" aria-disabled="true" href="#">Prev</a>
+                        </li>
+                        {% endif %}
+
+                        <!-- Page List -->
+                        {% for page_number in question_list.paginator.page_range %}
+                        {% if page_number >= question_list.number|add:-5 and page_number <= question_list.number|add:5 %}
+                            {% if page_number == question_list.number %}
+                            <li class="page-item active" aria-current="page">
+                                <a class="page-link" data-page="{{ page_number }}" href="#">{{ page_number }}</a>
+                            </li>
+                            {% else %}
+                            <li class="page-item">
+                                <a class="page-link" data-page="{{ page_number }}" href="#">{{ page_number }}</a>
+                            </li>
+                            {% endif %}
+                        {% endif %}
+                        {% endfor %}
+
+                        <!-- Next Page -->
+                        {% if question_list.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" data-page="{{ question_list.next_page_number }}" href="#">Next</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <a class="page-link" tabindex="-1" aria-disabled="true" href="#">Next</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                    <a href = "{% url 'pub_review:Pub_Question_create' pub.id%}" class="btn btn-primary">
+                        Ask a Question
+                    </a>
+              </div>
+
+        </div>
+
+    <div class="col-md-3">
+        <div class="white-box">MAP</div>
+    </div>
+    <div class="col-md-3">
+          <a href="{% url 'pub_review:pub_modify' pub_id=pub.id%}" class="btn btn-sm btn-outline-secondary">Edit the Pub</a>
+          <a href="#" class="delete btn btn-sm btn-outline-danger" data-uri="{% url 'pub_review:pub_delete' pub_id=pub.id %}">Delete the pub</a>
+    </div>
+{% endblock %}
+{% block script %}
+<script type='text/javascript'>
+$(document).ready(function(){
+    $(".delete").on('click', function() {
+        if(confirm("Do you want to delete it?")) {
+            location.href = $(this).data('uri');
+        }
+    });
+    $(".recommend").on('click', function() {
+        if(confirm("Do you want to recommend this pub?")) {
+            location.href = $(this).data('uri');
+        }
+    });
+});
+</script>
+{% endblock %}

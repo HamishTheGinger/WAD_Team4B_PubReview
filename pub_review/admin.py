@@ -2,11 +2,11 @@ from django.contrib import admin
 from pub_review.models import *
 
 # Register your models here.
-admin.site.register(UserTable)
-admin.site.register(PubTable)
-admin.site.register(Top5_PubTable)
-admin.site.register(AnswerTable)
-admin.site.register(QuestionTable)
-admin.site.register(ReviewTable)
+admin.site.register(UserProfile)
+admin.site.register(Pub)
+admin.site.register(FavoritePubs)
+admin.site.register(Answer)
+admin.site.register(Question)
+admin.site.register(Review)
 
 

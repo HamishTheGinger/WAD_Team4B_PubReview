@@ -1,150 +1,156 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
+from .models import Question,Pub,User,Answer,Review,UserProfile,FavoritePubs
+from django.utils import timezone
+from .forms import QuestionForm, AnswerForm,UserForm,UserProfileForm,PubProfileForm,ReviewForm,FavoritePubForm
+from django.core.paginator import Paginator
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.core.paginator import Paginator
-
-from pub_review.models import PubTable, ReviewTable, QuestionTable, AnswerTable, UserTable, Top5_PubTable
-#from pub_review.forms import AddPubForm, UserForm, UserProfileForm, EditPubForm, AddAnswerForm, EditAnswerFrom, ReviewForm, EditReviewForm
-
+from django.contrib import auth,messages
+from django.db.models import Q
 # Create your views here.
+
 def index(request):
-    context_dict = {}
-
-    # get list of top 5 pubs
-    pub_list =  PubTable.objects.order_by('-review_score')[:5]
-    context_dict['top_pubs_list'] = pub_list
-
-    # get list of recent reviews
-    reviews = ReviewTable.objects.order_by('-Date')[:10]
-    context_dict['recent_reviews_list'] = reviews
-
-    return render(request, 'pub_review/index.html', context= context_dict)
-
-def placeholder(request):
-    context_dict = {}
-    return render(request, 'pub_review/placeholder.html', context=context_dict)
-
-def search(request):
-    context_dict = {}
-    return render(request, 'pub_review/index.html', context= context_dict)
-
-def pubs(request):
-    """
-    This view does not have the functionality 
-    for the pubs to be ordered in any way, instead the pubs must be
-    ordered using the QuerySet passed out
-    """
-    
-    context_dict = {}
-    
-    # get list of all pubs to be displayed
-    pubs = PubTable.objects.all()
-    context_dict["pub_List"] = pubs
-
-    return render(request, 'pub_review/pubs.html',context_dict)
-
-
-@login_required     # this should maybe be admin only?
-def add_pub(request):
-    # make call to AddPub form
-    form = AddPubForm()
-    
-    if request.method == "POST":
-        form = AddPubForm(request.POST)
-        if form.is_valid():
-            form.save(commit=True)
-            #TO-DO
-            return redirect()               # Not sure if this should become a redirect to the newly created pub page?
-        else:
-            print(form.errors)
-
-    return render(request, 'pub_review/pubs/add_pub.html', {'form':form})
-
-def show_pub(request):
-    return HttpResponse("<h1>To be made</h1>")
-
-@login_required
-def edit_pub(request):
-        # make call to AddPub form
-    form = EditPubForm()
-    
-    if request.method == "POST":
-        form = EditPubForm(request.POST)
-        if form.is_valid():
-            form.save(commit=True)
-            #TO-DO
-            return redirect()               # redirect to newly edited pub page.
-        else:
-            print(form.errors)
-
-    return HttpResponse("<h1>To be made</h1>")
-
-def show_reviews(request):
-    return HttpResponse("<h1>To be made</h1>")
-
-@login_required # maybe can be done by hiding like button, instead of this way.
-def like_review_view(request):
-    # This will be JS function to add the like button functionality to the reviews
-    
-    return HttpResponse("<h1>To be made</h1>")
-
-def show_review(request):
-    return HttpResponse("<h1>To be made</h1>")
-
+    top5_pubs = Pub.objects.order_by('voter')[:5]
+    recent_reviews= Review.objects.order_by('-create_date')[:5]
+    context ={'top5_pubs':top5_pubs, 'recent_reviews':recent_reviews}
+    return render(request,'pub_review/home.html',context)
 def list_questions(request):
     page = request.GET.get('page', 1)  # Page
-    question_list = QuestionTable.objects.order_by('-Date')
+    kw = request.GET.get('kw','')
+    question_list = Question.objects.order_by('-create_date')
+    if kw:
+        question_list = question_list.filter(
+            Q(subject__icontains=kw) |
+            Q(content__icontains=kw) |
+            Q(author__username__icontains=kw) |
+            Q(answer__author__username__icontains=kw)
+        ).distinct()
 
     # Paging
     paginator = Paginator(question_list, 10)
     page_obj = paginator.get_page(page)
 
-    context = {'question_list': page_obj}
+    context = {'question_list': page_obj, 'page': page, 'kw': kw}
     return render(request, 'pub_review/Q&A.html', context)
 
-def add_question(request):
-        return HttpResponse("<h1>To be made</h1>")
+def detail(request, question_id):
+    question = get_object_or_404(Question, pk=question_id)
+    context = {'question': question}
+    return render(request, 'pub_review/question_detail.html', context)
 
-def show_question(request):
-    return HttpResponse("<h1>To be made</h1>")
+@login_required(login_url='pub_review:login')
+def answer_create(request, question_id):
+    question = get_object_or_404(Question, pk=question_id)
+    if request.method == "POST":
+        form = AnswerForm(request.POST)
+        if form.is_valid():
+            answer = form.save(commit=False)
+            answer.author = request.user
+            answer.question = question
+            answer.create_date = timezone.now()
+            answer.save()
+            return redirect('pub_review:detail', question_id=question.id)
+    else:
+        form = AnswerForm()
+    context = {'question': question, 'form': form}
+    return render(request, 'pub_review/question_detail.html', context)
 
-@login_required
-def add_answer(request):
+@login_required(login_url='pub_review:login')
+def answer_modify(request,answer_id):
+    answer = get_object_or_404(Answer,pk=answer_id)
+    if request.user != answer.author:
+        messages.error(request,'No Authentication')
+        return redirect('pub_review:detail',question_id=answer.question.id)
 
-    return HttpResponse("<h1>To be made</h1>")
+    if request.method =="POST":
+        form = AnswerForm(request.POST,instance=answer)
+        if form.is_valid():
+            answer = form.save(commit=False)
+            answer.author = request.user
+            answer.modify_date = timezone.now()
+            answer.save()
+            return redirect('pub_review:detail',question_id=answer.question.id)
+    else:
+        form = AnswerForm(instance=answer)
+    context = {'form' : form}
+    return render(request,'pub_review/answer_form.html',context)
 
-@login_required
-def edit_answer(request):
-    return HttpResponse("<h1>To be made</h1>")
+@login_required(login_url='pub_review:login')
+def answer_delete(request,answer_id):
+    answer = get_object_or_404(Answer,pk=answer_id)
+    if request.user != answer.author:
+        messages.error(request, "No Authentication")
+        return redirect('pub_review:detail',question_id=answer.question.id)
+    answer.delete()
+    return redirect('pub_review:detail',question_id=answer.question.id)
 
-def user_profile(request, user_id):
-    # This could maybe call a helper function, which is passed the request
+@login_required(login_url='pub_review:login')
+def question_create(request):
+    if request.method == 'POST':
+        form = QuestionForm(request.POST)
+        if form.is_valid():
+            question = form.save(commit=False)
+            question.author = request.user
+            question.create_date = timezone.now()
+            question.save()
+            return redirect('pub_review:questions')
+    else:
+        form = QuestionForm()
+    context = {'form': form}
+    return render(request, 'pub_review/question_form.html', context)
 
-    #qeury Top5pub filter by UserID, get list of pub IDs, use those to reference PubTable for list of pubs.
-    context_dict = {}
 
-    try:
-        user = UserTable.objects.get(id=user_id) #get the attributes of the user with the id user_id
-        user_top_5 = Top5_PubTable.objects.get(UserID=user_id) #get all the pubs of the user in the top_5_pubs table
+from django.shortcuts import render
 
-        context_dict["user"] = user
-        context_dict["top_5"]= user_top_5
+@login_required(login_url='pub_review:login')
+def question_modify(request,question_id):
+    question = get_object_or_404(Question,pk=question_id)
+    if request.user != question.author:
+        messages.error(request,'No Authentication')
+        return redirect('pub_review:detail',question_id=question.id)
 
-    except UserTable.DoesNotExist:
-        context_dict["user"] = None
-        context_dict["top_5"]= None
+    if request.method =="POST":
+        form = QuestionForm(request.POST,instance=question)
+        if form.is_valid():
+            question = form.save(commit=False)
+            question.author = request.user
+            question.modify_date = timezone.now()
+            question.save()
+            return redirect('pub_review:detail',question_id=question.id)
+    else:
+        form = QuestionForm(instance=question)
+    context = {'form' : form}
+    return render(request,'pub_review/question_form.html',context)
 
-    #return render(request, 'pub_review/user_profile.html', context_dict)
-    return HttpResponse("<h1>To be made</h1>")
+@login_required(login_url='pub_review:login')
+def question_delete(request,question_id):
+    question = get_object_or_404(Question,pk=question_id)
+    if request.user != question.author:
+        messages.error(request, "No Authentication")
+        return redirect('pub_review:detail',question_id=question.id)
+    question.delete()
+    return redirect('pub_review:questions')
 
-def user_profile_reviews(request):
-    return HttpResponse("<h1>To be made</h1>")
-
-@login_required
-def edit_user_profile(request):
-    return HttpResponse("<h1>To be made</h1>")
+def signup(request):
+    registered = False
+    if request.method == 'POST':
+        # most of this sourced from tango with django online tutorial
+        user_form = UserForm(request.POST)
+        if user_form.is_valid():
+            if request.POST['password1'] == request.POST['password2']:
+                user = User.objects.create_user(request.POST['username'], password=request.POST['password1'])
+                userProfile = UserProfile.objects.create(user=user)
+                FavoritePubs.objects.create(user=userProfile)
+                auth.login(request, user)
+                user_id = user.id
+                return redirect('pub_review:user_modify', user_id=user_id)
+        else:  
+            print(user_form.errors)
+    else:
+        user_form = UserForm()
+    return render(request, 'pub_review/signup.html', context={'user_form': user_form, 'registered': registered})
 
 def user_login(request):
     if request.method == "POST":
@@ -153,7 +159,7 @@ def user_login(request):
         password = request.POST.get("password")
 
         #use django built in functionality to verify login details
-        user = authenticate(username, password)
+        user = authenticate(username=username, password=password)
 
         # if user instance was found, log user in
         if user:
@@ -169,37 +175,311 @@ def user_login(request):
     else:
         return render(request, "pub_review/login.html")
 
-def register(request):
-    #TO-DO finish configuring the user forms, this is not suitable for our use.
-    registered = False
-
-    if request.method == 'POST':
-        # most of this sourced from tango with django online tutorial
-        user_form = UserForm(request.POST)
-        profile_form = UserProfileForm(request.POST)
-
-        if user_form.is_valid() and profile_form.is_valid():
-            user = user_form.save()
-            user.set_password(user.password)
-            user.save()
-
-            profile = profile_form.save(commit=False)
-            profile.user = user
-
-            if 'picture' in request.FILES:
-                profile.picture = request.FILES['picture']
-            
-            profile.save()
-            registered = True
-        else:
-            print(user_form.errors, profile_form.errors)
-    else:
-        user_form = UserForm()
-        profile_form = UserProfileForm()
-    
-    return render(request, 'pub_review:register', context={'user_form': user_form, 'profile_form': profile_form, 'registered': registered})
-
 @login_required
 def user_logout(request):
+# Since we know the user is logged in, we can now just log them out.
     logout(request)
-    return redirect(reverse('rango:index'))
+# Take the user back to the homepage.
+    return redirect(reverse('pub_review:index'))
+
+def list_pubs(request):
+    page = request.GET.get('page', 1)  # Page
+    pub_list = Pub.objects.order_by('pubName')
+
+    # Paging
+    paginator = Paginator(pub_list, 10)
+    page_obj = paginator.get_page(page)
+
+    context = {'pub_list': page_obj}
+    return render(request, 'pub_review/search.html', context)
+
+@login_required(login_url='pub_review:login')
+def pub_create(request):
+    if request.method == 'POST':
+        form = PubProfileForm(request.POST)
+        if form.is_valid():
+            pub = form.save(commit=False)
+            pub.owner = request.user
+            if 'picture' in request.FILES:
+                pub.picture = request.FILES['picture']
+            pub.save()
+            return redirect('pub_review:search')
+    else:
+        form = PubProfileForm()
+    context = {'form': form}
+    return render(request, 'pub_review/pub_form.html')
+
+def showPub(request,pub_id):
+    pub = get_object_or_404(Pub, pk=pub_id)
+    page_review = request.GET.get('page1', 1)
+    review = Review.objects.filter(pub=pub)
+    review_list = review.order_by('-create_date')
+    question = Question.objects.filter(pub=pub)
+    question_list = question.order_by('-create_date')
+    page_question = request.GET.get('page2',1)
+    paginator_review = Paginator(review_list, 10)
+    page_obj_review = paginator_review.get_page(page_review)
+    paginator_question = Paginator(question_list, 10)
+    page_obj_question = paginator_question.get_page(page_question)
+
+    context = {'review_list': page_obj_review, 'page1': page_review, 'pub': pub,'question_list':page_obj_question,'page2':page_question}
+    return render(request,'pub_review/pub_detail.html',context)
+
+@login_required(login_url='pub_review:login')
+def pub_modify(request,pub_id):
+    pub = get_object_or_404(Pub, pk=pub_id)
+    if request.user != pub.owner:
+        messages.error(request,'No Authentication')
+        return redirect('pub_review:pubDetail',pub_id=pub.id)
+
+    if request.method =="POST":
+        form = PubProfileForm(request.POST,instance=pub)
+        if form.is_valid():
+            pub = form.save(commit=False)
+            if 'picture' in request.FILES:
+                pub.picture = request.FILES['picture']
+            pub.save()
+            return redirect('pub_review:pubDetail',pub_id=pub.id)
+    else:
+        form = PubProfileForm(instance=pub)
+    context = {'form': form,'pub':pub,}
+    return render(request,'pub_review/pub_form.html',context)
+
+@login_required(login_url='pub_review:login')
+def pub_delete(request,pub_id):
+    pub = get_object_or_404(Pub, pk=pub_id)
+    if request.user != pub.owner:
+        messages.error(request, "No Authentication")
+        return redirect('pub_review:pubDetail',pub_id=pub.id)
+    pub.delete()
+    return redirect('pub_review:index')
+
+
+def showReview(request,pub_id,review_id):
+    pub = get_object_or_404(Pub, pk=pub_id)
+    review = Review.objects.filter(pub=pub, pk=review_id).get()
+    context = {'review': review, 'pub':pub,}
+    return render(request,'pub_review/review_detail.html',context)
+@login_required(login_url='pub_review:login')
+def review_create(request, pub_id):
+    pub = get_object_or_404(Pub, pk=pub_id)
+    if request.method == "POST":
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.author = request.user
+            review.pub = pub
+            review.create_date = timezone.now()
+            review.save()
+            return redirect('pub_review:pubDetail', pub_id=pub.id)
+    else:
+        form = ReviewForm()
+    context = {'form': form,'pub':pub,}
+    return render(request, 'pub_review/review_form.html', context)
+
+@login_required(login_url='pub_review:login')
+def review_modify(request,pub_id,review_id):
+    pub = get_object_or_404(Pub, pk=pub_id)
+    review = Review.objects.filter(pub=pub, pk=review_id).get()
+    if request.user != review.author:
+        messages.error(request,'No Authentication')
+        return redirect('pub_review:pubDetail',pub_id=pub.id)
+
+    if request.method =="POST":
+        form = ReviewForm(request.POST,instance=review)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.author = request.user
+            review.modify_date = timezone.now()
+            review.save()
+            return redirect('pub_review:pubDetail',pub_id=pub.id)
+    else:
+        form = ReviewForm(instance=review)
+    context = {'form': form,'pub':pub,}
+    return render(request,'pub_review/review_form.html',context)
+
+@login_required(login_url='pub_review:login')
+def review_delete(request,pub_id,review_id):
+    pub = get_object_or_404(Pub, pk=pub_id)
+    review = Review.objects.filter(pub=pub, pk=review_id).get()
+    if request.user != review.author:
+        messages.error(request, "No Authentication")
+        return redirect('pub_review:pubDetail',pub_id=pub.id)
+    review.delete()
+    return redirect('pub_review:pubDetail',pub_id=pub.id)
+
+@login_required(login_url='pub_review:login')
+def Pub_Answer_create(request, pub_id, Pub_Question_id):
+    pub = get_object_or_404(Pub, pk=pub_id)
+    question = Question.objects.filter(pub=pub, pk=Pub_Question_id).get()
+    if request.method == "POST":
+        form = AnswerForm(request.POST)
+        if form.is_valid():
+            answer = form.save(commit=False)
+            answer.author = request.user
+            answer.pub=pub
+            answer.question = question
+            answer.create_date = timezone.now()
+            answer.save()
+            return redirect('pub_review:Pub_QuestionDetail', pub_id=pub.id, Pub_Question_id=question.id)
+    else:
+        form = AnswerForm()
+    context = {'question': question, 'form': form}
+    return render(request, 'pub_review/Pub_Question_detail.html', context)
+
+@login_required(login_url='pub_review:login')
+def Pub_Answer_modify(request,pub_id, Pub_Question_id, Pub_Answer_id):
+    pub = get_object_or_404(Pub, pk=pub_id)
+    question = Question.objects.filter(pub=pub, pk=Pub_Question_id).get()
+    answer = Answer.objects.filter(pub=pub,question=question,pk=Pub_Answer_id).get()
+    if request.user != answer.author:
+        messages.error(request,'No Authentication')
+        return redirect('pub_review:Pub_QuestionDetail', pub_id=pub.id, Pub_Question_id=question.id)
+
+    if request.method =="POST":
+        form = AnswerForm(request.POST,instance=answer)
+        if form.is_valid():
+            answer = form.save(commit=False)
+            answer.author = request.user
+            answer.modify_date = timezone.now()
+            answer.save()
+            return redirect('pub_review:Pub_QuestionDetail', pub_id=pub.id, Pub_Question_id=question.id)
+    else:
+        form = AnswerForm(instance=answer)
+    context = {'form' : form}
+    return render(request,'pub_review/answer_form.html',context)
+
+@login_required(login_url='pub_review:login')
+def Pub_Answer_delete(request,pub_id, Pub_Question_id,Pub_Answer_id):
+    pub = get_object_or_404(Pub, pk=pub_id)
+    question = Question.objects.filter(pub=pub, pk=Pub_Question_id).get()
+    answer = Answer.objects.filter(pub=pub, question=question, pk=Pub_Answer_id).get()
+    if request.user != answer.author:
+        messages.error(request, "No Authentication")
+        return redirect('pub_review:Pub_QuestionDetail', pub_id=pub.id, Pub_Question_id=question.id)
+    answer.delete()
+    return redirect('pub_review:Pub_QuestionDetail', pub_id=pub.id, Pub_Question_id=question.id)
+
+@login_required(login_url='pub_review:login')
+def Pub_Question_create(request,pub_id):
+    pub = get_object_or_404(Pub, pk=pub_id)
+    if request.method == 'POST':
+        form = QuestionForm(request.POST)
+        if form.is_valid():
+            question = form.save(commit=False)
+            question.author = request.user
+            question.pub=pub
+            question.create_date = timezone.now()
+            question.save()
+            return redirect('pub_review:pubDetail',pub_id=pub.id)
+    else:
+        form = QuestionForm()
+    context = {'form': form}
+    return render(request, 'pub_review/question_form.html', context)
+
+
+
+@login_required(login_url='pub_review:login')
+def Pub_Question_modify(request,pub_id,Pub_Question_id):
+    pub = get_object_or_404(Pub, pk=pub_id)
+    question = Question.objects.filter(pub=pub,pk=Pub_Question_id).get()
+    if request.user != question.author:
+        messages.error(request,'No Authentication')
+        return redirect('pub_review:Pub_QuestionDetail',pub_id=pub.id, Pub_Question_id=question.id)
+
+    if request.method =="POST":
+        form = QuestionForm(request.POST,instance=question)
+        if form.is_valid():
+            question = form.save(commit=False)
+            question.author = request.user
+            question.modify_date = timezone.now()
+            question.save()
+            return redirect('pub_review:Pub_QuestionDetail',pub_id=pub.id, Pub_Question_id=question.id)
+    else:
+        form = QuestionForm(instance=question)
+    context = {'form' : form}
+    return render(request,'pub_review/question_form.html',context)
+
+@login_required(login_url='pub_review:login')
+def Pub_Question_delete(request,pub_id,Pub_Question_id):
+    pub = get_object_or_404(Pub, pk=pub_id)
+    question = Question.objects.filter(pub=pub, pk=Pub_Question_id).get()
+    if request.user != question.author:
+        messages.error(request, "No Authentication")
+        return redirect('pub_review:Pub_QuestionDetail',pub_id=pub.id, Pub_Question_id=question.id)
+    question.delete()
+    return redirect('pub_review:pubDetail',pub_id=pub.id)
+
+def showPub_Question(request, pub_id,Pub_Question_id):
+    pub = get_object_or_404(Pub, pk=pub_id)
+    question = Question.objects.filter(pub=pub, pk=Pub_Question_id).get()
+    context = {'question': question,'pub':pub}
+    return render(request, 'pub_review/Pub_Question_detail.html',context)
+
+def showUserProfile(request, user_id):
+    user = get_object_or_404(User, pk=user_id)
+    userProfile = UserProfile.objects.filter(user=user).get()
+    top_5_pubs = FavoritePubs.objects.filter(user=userProfile).get()
+    review_list = Review.objects.filter(author=user).order_by('-create_date')
+    question_list = Question.objects.filter(author=user).order_by('-create_date')
+    answer_list = Answer.objects.filter(author=user).order_by('-create_date')
+    page_review = request.GET.get('page1', 1)
+    page_question = request.GET.get('page2', 1)
+    page_answer = request.GET.get('page3', 1)
+    paginator_review = Paginator(review_list, 10)
+    page_obj_review = paginator_review.get_page(page_review)
+    paginator_question = Paginator(question_list, 10)
+    page_obj_question = paginator_question.get_page(page_question)
+    paginator_answer = Paginator(answer_list, 10)
+    page_obj_answer = paginator_answer.get_page(page_answer)
+    if(request.user.is_authenticated):
+        context = {'user':  user, 'review_list':page_obj_review, 'question_list' : page_obj_question, 'answer_list' :page_obj_answer, 'userProfile':userProfile, 'top_5_pubs':top_5_pubs}
+    else:
+        context = {'review_list':page_obj_review, 'question_list' : page_obj_question, 'answer_list' :page_obj_answer, 'userProfile':userProfile, 'top_5_pubs':top_5_pubs}
+    return render(request, 'pub_review/user_profile.html', context)
+
+
+@login_required(login_url='pub_review:login')
+def userProfile_modify(request,user_id):
+    user = get_object_or_404(User, pk=user_id)
+    userprofile = UserProfile.objects.filter(user=user).get()
+    top5_pubs = FavoritePubs.objects.filter(user=userprofile).get()
+    userprofile_form = None
+    top5_pubs_form = None
+    if request.user != user:
+        messages.error(request, 'No Authentication')
+        return redirect('pub_review:userProfile', user_id=user_id)
+
+    if request.method == "POST":
+        userprofile_form = UserProfileForm(request.POST, instance=userprofile)
+        top5_pubs_form = FavoritePubForm(request.POST, instance=top5_pubs)
+        if userprofile_form.is_valid() and top5_pubs_form.is_valid():
+            userprofile_form.save()
+            top5_pubs_form.save()
+            return redirect('pub_review:userProfile', user_id=user_id)
+    else:
+        userprofile_form = UserProfileForm(instance=userprofile)
+        top5_pubs_form = FavoritePubForm(instance=top5_pubs)
+    context = {'userProfile_form': userprofile_form, 'top5_pubs_form': top5_pubs_form}
+    return render(request, 'pub_review/userProfile_form.html', context)
+
+@login_required(login_url='pub_review:login')
+def userProfile_delete(request,user_id):
+    user = get_object_or_404(User, pk=user_id)
+    userProfile = UserProfile.objects.filter(user=user).get()
+    if request.user != user:
+        messages.error(request, "No Authentication")
+        return redirect('pub_review:showUserProfile',user_id=user_id)
+    userProfile.delete()
+    user.delete()
+    return redirect('pub_review:index')
+
+@login_required(login_url='pub_review:login')
+def vote_pub(request, pub_id):
+    pub = get_object_or_404(Pub, pk=pub_id)
+    if request.user == pub.owner:
+        messages.error(request, 'The owner is not allowed to recommend own pub')
+    else:
+        pub.voter.add(request.user)
+    return redirect('pub_review:pubDetail', pub_id=pub.id)
+

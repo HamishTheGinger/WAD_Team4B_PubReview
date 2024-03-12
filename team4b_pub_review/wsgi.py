@@ -1,5 +1,5 @@
 """
-WSGI config for team4b_pub_review project.
+WSGI config for config project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 

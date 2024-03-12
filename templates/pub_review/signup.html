@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container my-3">
+    <div class="row my-3">
+        <div class="col-4">
+            <h5>Sign Up</h5>
+        </div>
+    </div>
+    <form method="post" class="post-form" action="{% url 'pub_review:signup' %}">
+        {% csrf_token %}
+        {% if user_form.errors %}
+        {% for field in user_form %}
+            {% for error in field.errors %}  <!-- Print error -->
+                <div class="alert alert-danger">
+                    <strong>{{ field.label }}</strong>
+                    {{ error }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+        {% for error in user_form.non_field_errors %}   <!-- Print Non-field error -->
+            <div class="alert alert-danger">
+                <strong>{{ error }}</strong>
+            </div>
+        {% endfor %}
+        {% endif %}
+        <div class="form-group">
+            <label for="username">User Name</label>
+            <input type="text" class="form-control" name="username" id="username"
+                   value="{{ form.username.value|default_if_none:'' }}">
+        </div>
+        <div class="form-group">
+            <label for="password1">Password</label>
+            <input type="password" class="form-control" name="password1" id="password1"
+                   value="{{ form.password1.value|default_if_none:'' }}">
+        </div>
+        <div class="form-group">
+            <label for="password2">Password Comfirmation</label>
+            <input type="password" class="form-control" name="password2" id="password2"
+                   value="{{ form.password2.value|default_if_none:'' }}">
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="text" class="form-control" name="email" id="email"
+                   value="{{ form.email.value|default_if_none:'' }}">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Register</button>
+        <span>
+            <a href="{% url 'pub_review:login' %}" class="btn btn-outline-secondary">Login</a>
+        </span>
+    </form>
+</div>
+{% endblock %}
