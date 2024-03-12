@@ -23,7 +23,7 @@ class Answer(models.Model):
 class UserProfile(models.Model):
     # These are commented out as they are stored in the django models.User table
     user = models.OneToOneField(User,on_delete=models.CASCADE)
-    picture = models.ImageField(upload_to='userProfile_images',blank= True,null=True)
+    picture = models.ImageField(upload_to='userProfile_images',blank= True,null=True, default='userProfile_images/default-profile.png')
     firstName = models.CharField(max_length=128,blank= True,null=True)
     lastName = models.CharField(max_length=128,blank=True,null=True)
     sex = models.CharField(max_length=10,blank=True,null=True)
