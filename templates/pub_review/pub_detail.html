@@ -70,7 +70,7 @@
                         <a href="{% url 'pub_review:reviewDetail' pub.id review.id %}">{{ review.subject }}</a>
                     </td>
                     <td>
-                        {{ review.author.username}}
+                        <a href="{% url 'pub_review:userProfile' user_id=review.author.id %}">{{ review.author.username}}</a>
                     </td>
                     <!-- Question Object End-->
                 </tr>
