@@ -432,7 +432,10 @@ def showUserProfile(request, user_id):
     page_obj_question = paginator_question.get_page(page_question)
     paginator_answer = Paginator(answer_list, 10)
     page_obj_answer = paginator_answer.get_page(page_answer)
-    context = {'user':  user, 'review_list':page_obj_review, 'question_list' : page_obj_question, 'answer_list' :page_obj_answer, 'userProfile':userProfile, 'top_5_pubs':top_5_pubs}
+    if(request.user.is_authenticated):
+        context = {'user':  user, 'review_list':page_obj_review, 'question_list' : page_obj_question, 'answer_list' :page_obj_answer, 'userProfile':userProfile, 'top_5_pubs':top_5_pubs}
+    else:
+        context = {'review_list':page_obj_review, 'question_list' : page_obj_question, 'answer_list' :page_obj_answer, 'userProfile':userProfile, 'top_5_pubs':top_5_pubs}
     return render(request, 'pub_review/user_profile.html', context)
 
 

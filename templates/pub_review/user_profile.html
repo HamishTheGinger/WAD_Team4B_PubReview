@@ -286,10 +286,12 @@
                                 {% endif %}
                             </ul>
             </div>
+            {% if request.user == userProfile.user %}
             <div class="col-md-3">
-              <a href="{% url 'pub_review:user_modify' user_id=user.id%}" class="btn btn-sm btn-outline-secondary">Edit the Profile</a>
-              <a href="#" class="delete btn btn-sm btn-outline-danger" data-uri="{% url 'pub_review:user_delete' user_id=user.id %}">Delete the Profile</a>
+            <a href="{% url 'pub_review:user_modify' user_id=userProfile.user.id%}" class="btn btn-sm btn-outline-secondary">Edit the Profile</a>
+            <a href="#" class="delete btn btn-sm btn-outline-danger" data-uri="{% url 'pub_review:user_delete' user_id=userProfile.user.id %}">Delete the Profile</a>
             </div>
+            {% endif %}
             <br>
 </div>
 
