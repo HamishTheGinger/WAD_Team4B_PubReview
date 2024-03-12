@@ -443,6 +443,7 @@ def showUserProfile(request, user_id):
 def userProfile_modify(request,user_id):
     user = get_object_or_404(User, pk=user_id)
     userprofile = UserProfile.objects.filter(user=user).get()
+    pubs = Pub.objects.order_by('pubName')
     top5_pubs = FavoritePubs.objects.filter(user=userprofile).get()
     userprofile_form = None
     top5_pubs_form = None
@@ -460,7 +461,7 @@ def userProfile_modify(request,user_id):
     else:
         userprofile_form = UserProfileForm(instance=userprofile)
         top5_pubs_form = FavoritePubForm(instance=top5_pubs)
-    context = {'userProfile_form': userprofile_form, 'top5_pubs_form': top5_pubs_form}
+    context = {'userProfile_form': userprofile_form, 'top5_pubs_form': top5_pubs_form, 'pubs': pubs}
     return render(request, 'pub_review/userProfile_form.html', context)
 
 @login_required(login_url='pub_review:login')

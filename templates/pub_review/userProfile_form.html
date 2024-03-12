@@ -56,23 +56,72 @@
         </div>
         <div class = "form-group">
             <label for="pub1">Top1 Pub</label>
-            <input type="text" class="form-control" name="pub1" id="pub1" value="{{ top5_pubs_form.pub1.value|default_if_none:''}}">
+            <select name="pub1" id="pub1" class="form-select">
+                {% if top5_pubs_form.pub1.value %}
+                <option selected>{{ top5_pubs_form.pub1.value|default_if_none:'None'}}</option>
+                {% else %}
+                <option selected>None</option>
+                {% endif %}
+                {% for pub in pubs %}
+                <option>{{ pub.pubName }}</option>
+                {% endfor %}
+              </select>   
         </div>
         <div class = "form-group">
             <label for="pub2">Top2 Pub</label>
-            <input type="text" class="form-control" name="pub2" id="pub2" value="{{ top5_pubs_form.pub2.value|default_if_none:''}}">
+            <select name="pub2" id="pub2" class="form-select">
+                {% if top5_pubs_form.pub2.value %}
+                <option>None</option>
+                <option selected>{{ top5_pubs_form.pub2.value}}</option>
+                {% else %}
+                <option selected>None</option>
+                {% endif %} 
+                {% for pub in pubs %}
+                <option>{{ pub.pubName }}</option>
+                {% endfor %}
+              </select>        
         </div>
         <div class = "form-group">
             <label for="pub3">Top3 Pub</label>
-            <input type="text" class="form-control" name="pub3" id="pub3" value="{{ top5_pubs_form.pub3.value|default_if_none:''}}">
+            <select name="pub3" id="pub3" class="form-select">
+                {% if top5_pubs_form.pub3.value %}
+                <option>None</option>
+                <option selected>{{ top5_pubs_form.pub3.value}}</option>
+                {% else %}
+                <option selected>None</option>
+                {% endif %}                 
+                {% for pub in pubs %}
+                <option>{{ pub.pubName }}</option>
+                {% endfor %}
+              </select>        
         </div>
         <div class = "form-group">
             <label for="pub4">Top4 Pub</label>
-            <input type="text" class="form-control" name="pub4" id="pub4" value="{{ top5_pubs_form.pub4.value|default_if_none:''}}">
+            <select name="pub4" id="pub4" class="form-select">
+                {% if top5_pubs_form.pub4.value %}
+                <option>None</option>
+                <option selected>{{ top5_pubs_form.pub4.value}}</option>
+                {% else %}
+                <option selected>None</option>
+                {% endif %} 
+                {% for pub in pubs %}
+                <option>{{ pub.pubName }}</option>
+                {% endfor %}
+              </select>        
         </div>
         <div class = "form-group">
             <label for="pub5">Top5 Pub</label>
-            <input type="text" class="form-control" name="pub5" id="pub5" value="{{ top5_pubs_form.pub5.value|default_if_none:''}}">
+            <select name="pub1" id="pub1" class="form-select">
+                {% if top5_pubs_form.pub5.value %}
+                <option>None</option>
+                <option selected>{{ top5_pubs_form.pub5.value}}</option>
+                {% else %}
+                <option selected>None</option>
+                {% endif %}                 
+                {% for pub in pubs %}
+                <option>{{ pub.pubName }}</option>
+                {% endfor %}
+              </select>
         </div>
 
         <button type="submit" class="btn btn-primary">Save</button>
