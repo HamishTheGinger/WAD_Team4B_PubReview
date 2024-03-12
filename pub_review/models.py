@@ -65,3 +65,6 @@ class FavoritePubs(models.Model):
     pub3 = models.CharField(max_length=100,null=True, blank=True)
     pub4 = models.CharField(max_length=100,null=True, blank=True)
     pub5 = models.CharField(max_length=100,null=True, blank=True)
+
+    def __str__(self):
+        return self.user.user.username + "'s top 5"

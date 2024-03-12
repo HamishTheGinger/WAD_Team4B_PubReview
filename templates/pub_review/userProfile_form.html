@@ -58,14 +58,15 @@
             <label for="pub1">Top1 Pub</label>
             <select name="pub1" id="pub1" class="form-select">
                 {% if top5_pubs_form.pub1.value %}
-                <option selected>{{ top5_pubs_form.pub1.value|default_if_none:'None'}}</option>
+                <option>None</option>
+                <option selected>{{ top5_pubs_form.pub1.value}}</option>
                 {% else %}
                 <option selected>None</option>
-                {% endif %}
+                {% endif %} 
                 {% for pub in pubs %}
                 <option>{{ pub.pubName }}</option>
                 {% endfor %}
-              </select>   
+              </select>        
         </div>
         <div class = "form-group">
             <label for="pub2">Top2 Pub</label>
