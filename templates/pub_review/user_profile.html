@@ -6,24 +6,19 @@
         <div class="col-md-8 profile-simple">
           <div class="d-flex">
             <div class="flex-shrink-0">
-              <h3>Profile Picture</h3>
-              {% if userProfile.picture %}
+                <h3>{{ userProfile.firstName }} {{ userProfile.lastName }}</h3>
+            {% if userProfile.picture %}
                 <img src="{{ userProfile.picture.url }}" alt="{{ userProfile.user.username }}'s Profile Picture">
               {% else %}
                  <p>No profile picture available.</p>
               {% endif %}
-            </div>
-            <div class="flex-grow-1 ms-3">
-              <h3>User Name</h3>
-                <p>{{ userProfile.firstName }}</p>
-                <p>{{ userProfile.lastName }}</p>
             </div>
           </div>
         </div>
         <div class="col-md-4 border-left">
           <div class="row profile-detail">
             <div class="col-6">
-                <h3>Sex</h3>
+                <h3>Gender</h3>
                 <p>{{ userProfile.sex }}</p>
             </div>
             <div class="col-6">

@@ -3,7 +3,7 @@
 <div class="container my-3">
     <div class="row my-3">
         <div class="col-4">
-            <h4>Sign Up</h4>
+            <h5>Sign Up</h5>
         </div>
     </div>
     <form method="post" class="post-form" action="{% url 'pub_review:signup' %}">
@@ -46,6 +46,9 @@
         </div>
 
         <button type="submit" class="btn btn-primary">Register</button>
+        <span>
+            <a href="{% url 'pub_review:login' %}" class="btn btn-outline-secondary">Login</a>
+        </span>
     </form>
 </div>
 {% endblock %}
