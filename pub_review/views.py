@@ -1,8 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
-from .models import Question,Pub,User,Answer,Review,Pub_Question,Pub_Answer,UserProfile,FavoritePubs
+from .models import Question,Pub,User,Answer,Review,UserProfile,FavoritePubs
 from django.utils import timezone
-from .forms import QuestionForm, AnswerForm,UserForm,UserProfileForm,PubProfileForm,ReviewForm,Pub_AnswerForm,Pub_QuestionForm,FavoritePubForm
+from .forms import QuestionForm, AnswerForm,UserForm,UserProfileForm,PubProfileForm,ReviewForm,FavoritePubForm
 from django.core.paginator import Paginator
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
@@ -214,7 +214,7 @@ def showPub(request,pub_id):
     page_review = request.GET.get('page1', 1)
     review = Review.objects.filter(pub=pub)
     review_list = review.order_by('-create_date')
-    question = Pub_Question.objects.filter(pub=pub)
+    question = Question.objects.filter(pub=pub)
     question_list = question.order_by('-create_date')
     page_question = request.GET.get('page2',1)
     paginator_review = Paginator(review_list, 10)
@@ -311,9 +311,9 @@ def review_delete(request,pub_id,review_id):
 @login_required(login_url='pub_review:login')
 def Pub_Answer_create(request, pub_id, Pub_Question_id):
     pub = get_object_or_404(Pub, pk=pub_id)
-    question = Pub_Question.objects.filter(pub=pub, pk=Pub_Question_id).get()
+    question = Question.objects.filter(pub=pub, pk=Pub_Question_id).get()
     if request.method == "POST":
-        form = Pub_AnswerForm(request.POST)
+        form = AnswerForm(request.POST)
         if form.is_valid():
             answer = form.save(commit=False)
             answer.author = request.user
@@ -323,21 +323,21 @@ def Pub_Answer_create(request, pub_id, Pub_Question_id):
             answer.save()
             return redirect('pub_review:Pub_QuestionDetail', pub_id=pub.id, Pub_Question_id=question.id)
     else:
-        form = Pub_AnswerForm()
+        form = AnswerForm()
     context = {'question': question, 'form': form}
     return render(request, 'pub_review/Pub_Question_detail.html', context)
 
 @login_required(login_url='pub_review:login')
 def Pub_Answer_modify(request,pub_id, Pub_Question_id, Pub_Answer_id):
     pub = get_object_or_404(Pub, pk=pub_id)
-    question = Pub_Question.objects.filter(pub=pub, pk=Pub_Question_id).get()
-    answer = Pub_Answer.objects.filter(pub=pub,question=question,pk=Pub_Answer_id).get()
+    question = Question.objects.filter(pub=pub, pk=Pub_Question_id).get()
+    answer = Answer.objects.filter(pub=pub,question=question,pk=Pub_Answer_id).get()
     if request.user != answer.author:
         messages.error(request,'No Authentication')
         return redirect('pub_review:Pub_QuestionDetail', pub_id=pub.id, Pub_Question_id=question.id)
 
     if request.method =="POST":
-        form = Pub_AnswerForm(request.POST,instance=answer)
+        form = AnswerForm(request.POST,instance=answer)
         if form.is_valid():
             answer = form.save(commit=False)
             answer.author = request.user
@@ -345,15 +345,15 @@ def Pub_Answer_modify(request,pub_id, Pub_Question_id, Pub_Answer_id):
             answer.save()
             return redirect('pub_review:Pub_QuestionDetail', pub_id=pub.id, Pub_Question_id=question.id)
     else:
-        form = Pub_AnswerForm(instance=answer)
+        form = AnswerForm(instance=answer)
     context = {'form' : form}
     return render(request,'pub_review/answer_form.html',context)
 
 @login_required(login_url='pub_review:login')
 def Pub_Answer_delete(request,pub_id, Pub_Question_id,Pub_Answer_id):
     pub = get_object_or_404(Pub, pk=pub_id)
-    question = Pub_Question.objects.filter(pub=pub, pk=Pub_Question_id).get()
-    answer = Pub_Answer.objects.filter(pub=pub, question=question, pk=Pub_Answer_id).get()
+    question = Question.objects.filter(pub=pub, pk=Pub_Question_id).get()
+    answer = Answer.objects.filter(pub=pub, question=question, pk=Pub_Answer_id).get()
     if request.user != answer.author:
         messages.error(request, "No Authentication")
         return redirect('pub_review:Pub_QuestionDetail', pub_id=pub.id, Pub_Question_id=question.id)
@@ -364,7 +364,7 @@ def Pub_Answer_delete(request,pub_id, Pub_Question_id,Pub_Answer_id):
 def Pub_Question_create(request,pub_id):
     pub = get_object_or_404(Pub, pk=pub_id)
     if request.method == 'POST':
-        form = Pub_QuestionForm(request.POST)
+        form = QuestionForm(request.POST)
         if form.is_valid():
             question = form.save(commit=False)
             question.author = request.user
@@ -373,7 +373,7 @@ def Pub_Question_create(request,pub_id):
             question.save()
             return redirect('pub_review:pubDetail',pub_id=pub.id)
     else:
-        form = Pub_QuestionForm()
+        form = QuestionForm()
     context = {'form': form}
     return render(request, 'pub_review/question_form.html', context)
 
@@ -382,13 +382,13 @@ def Pub_Question_create(request,pub_id):
 @login_required(login_url='pub_review:login')
 def Pub_Question_modify(request,pub_id,Pub_Question_id):
     pub = get_object_or_404(Pub, pk=pub_id)
-    question = Pub_Question.objects.filter(pub=pub,pk=Pub_Question_id).get()
+    question = Question.objects.filter(pub=pub,pk=Pub_Question_id).get()
     if request.user != question.author:
         messages.error(request,'No Authentication')
         return redirect('pub_review:Pub_QuestionDetail',pub_id=pub.id, Pub_Question_id=question.id)
 
     if request.method =="POST":
-        form = Pub_QuestionForm(request.POST,instance=question)
+        form = QuestionForm(request.POST,instance=question)
         if form.is_valid():
             question = form.save(commit=False)
             question.author = request.user
@@ -396,14 +396,14 @@ def Pub_Question_modify(request,pub_id,Pub_Question_id):
             question.save()
             return redirect('pub_review:Pub_QuestionDetail',pub_id=pub.id, Pub_Question_id=question.id)
     else:
-        form = Pub_QuestionForm(instance=question)
+        form = QuestionForm(instance=question)
     context = {'form' : form}
     return render(request,'pub_review/question_form.html',context)
 
 @login_required(login_url='pub_review:login')
 def Pub_Question_delete(request,pub_id,Pub_Question_id):
     pub = get_object_or_404(Pub, pk=pub_id)
-    question = Pub_Question.objects.filter(pub=pub, pk=Pub_Question_id).get()
+    question = Question.objects.filter(pub=pub, pk=Pub_Question_id).get()
     if request.user != question.author:
         messages.error(request, "No Authentication")
         return redirect('pub_review:Pub_QuestionDetail',pub_id=pub.id, Pub_Question_id=question.id)
@@ -412,7 +412,7 @@ def Pub_Question_delete(request,pub_id,Pub_Question_id):
 
 def showPub_Question(request, pub_id,Pub_Question_id):
     pub = get_object_or_404(Pub, pk=pub_id)
-    question = Pub_Question.objects.filter(pub=pub, pk=Pub_Question_id).get()
+    question = Question.objects.filter(pub=pub, pk=Pub_Question_id).get()
     context = {'question': question,'pub':pub}
     return render(request, 'pub_review/Pub_Question_detail.html',context)
 

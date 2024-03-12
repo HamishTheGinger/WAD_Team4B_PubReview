@@ -49,6 +49,7 @@
                 <tr class="text-center thead - dark">
                   <th>Number</th>
                   <th style="width:50%" class="text-left">Subject</th>
+                  <th>Pub</th>
                   <th>Post time</th>
                 </tr>
                 </thead>
@@ -61,7 +62,10 @@
                         <a href="{% url 'pub_review:reviewDetail' pub_id=review.pub.id review_id=review.id %}">{{ review.subject }}</a>
                     </td>
                     <td>
-                        {{ review.create_time}}
+                        <a href="{% url 'pub_review:pubDetail' pub_id=review.pub.id%}">{{ review.pub.pubName }}</a>
+                    </td>
+                    <td>
+                        {{ review.create_date }}
                     </td>
                     <!-- Question Object End-->
                 </tr>
@@ -125,6 +129,7 @@
                     <tr class="text-center thead - dark">
                         <th>Number</th>
                         <th style="width:50%" class="text-left">Subject</th>
+                        <th>Pub</th>
                         <th>Post Time</th>
                     </tr>
                 </thead>
@@ -135,6 +140,14 @@
                         <td>{{ question_list.paginator.count|sub:question_list.start_index|sub:forloop.counter0|add:1 }}</td>
                         <td class="text-left">
                             <a href="{% url 'pub_review:detail' question_id=question.id %}">{{ question.subject }}</a>
+                        </td>
+                        <td>
+                            {% if question.pub %}
+                            <a href="{% url 'pub_review:pubDetail' pub_id=question.pub.id %}">{{question.pub.pubName}}</a>
+                            {% else %}
+                            -
+                            {% endif %}
+                
                         </td>
                         <td>
                             {{ question.create_date}}
@@ -201,6 +214,7 @@
                             <tr class="text-center thead - dark">
                                 <th>Number</th>
                                 <th style="width:50%" class="text-left">Content</th>
+                                <th>Question</th>
                                 <th>Post Time</th>
                             </tr>
                         </thead>
@@ -211,6 +225,9 @@
                                 <td>{{ answer_list.paginator.count|sub:answer_list.start_index|sub:forloop.counter0|add:1 }}</td>
                                 <td class="text-left">
                                     {{ answer.content }}
+                                </td>
+                                <td>
+                                    <a href="{% url 'pub_review:detail' question_id=answer.question.id %}">{{ answer.question.subject }}</a>
                                 </td>
                                 <td>
                                     {{ answer.create_date}}

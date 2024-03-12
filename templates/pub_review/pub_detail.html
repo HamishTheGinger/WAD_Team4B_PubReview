@@ -138,6 +138,7 @@
                         <th>Number</th>
                         <th style="width:50%" class="text-left">Subject</th>
                         <th>Author</th>
+                        <th>Post Time</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -149,8 +150,11 @@
                             <a href="{% url 'pub_review:Pub_QuestionDetail' pub_id=pub.id Pub_Question_id=question.id %}">{{ question.subject }}</a>
                         </td>
                         <td>
-                            {{ question.author.username}}
-                        </td>
+                            <a href="{% url 'pub_review:userProfile' user_id=question.author.id%}"> {{ question.author.username}}</a>
+                         </td>
+                         <td>
+                             {{ question.create_date}}
+                         </td>
                         <!-- Question Object End-->
                     </tr>
                     {% endfor %}
