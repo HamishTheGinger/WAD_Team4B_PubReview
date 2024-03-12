@@ -132,6 +132,7 @@ def question_delete(request,question_id):
         return redirect('pub_review:detail',question_id=question.id)
     question.delete()
     return redirect('pub_review:questions')
+
 def signup(request):
     registered = False
     if request.method == 'POST':
@@ -143,8 +144,9 @@ def signup(request):
                 userProfile = UserProfile.objects.create(user=user)
                 FavoritePubs.objects.create(user=userProfile)
                 auth.login(request, user)
-            return redirect(reverse('pub_review:index'))
-        else:
+                user_id = user.id
+                return redirect('pub_review:user_modify', user_id=user_id)
+        else:  
             print(user_form.errors)
     else:
         user_form = UserForm()
@@ -442,7 +444,7 @@ def userProfile_modify(request,user_id):
     top5_pubs_form = None
     if request.user != user:
         messages.error(request, 'No Authentication')
-        return redirect('pub_review:showUserProfile', user_id=user_id)
+        return redirect('pub_review:userProfile', user_id=user_id)
 
     if request.method == "POST":
         userprofile_form = UserProfileForm(request.POST, instance=userprofile)
