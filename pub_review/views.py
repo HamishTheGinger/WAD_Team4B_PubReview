@@ -409,6 +409,7 @@ def Pub_Question_delete(request,pub_id,Pub_Question_id):
         return redirect('pub_review:Pub_QuestionDetail',pub_id=pub.id, Pub_Question_id=question.id)
     question.delete()
     return redirect('pub_review:pubDetail',pub_id=pub.id)
+
 def showPub_Question(request, pub_id,Pub_Question_id):
     pub = get_object_or_404(Pub, pk=pub_id)
     question = Pub_Question.objects.filter(pub=pub, pk=Pub_Question_id).get()
@@ -467,6 +468,7 @@ def userProfile_delete(request,user_id):
         messages.error(request, "No Authentication")
         return redirect('pub_review:showUserProfile',user_id=user_id)
     userProfile.delete()
+    user.delete()
     return redirect('pub_review:index')
 
 @login_required(login_url='pub_review:login')
