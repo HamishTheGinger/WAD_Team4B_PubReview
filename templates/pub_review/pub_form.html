@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <h5 class="my-3 border-bottm pb-2">Upload a Pub</h5>
+
+<!-- Pub Form -->
+    <form method="post" class="post-form my-3">
+        {% csrf_token %}
+<!-- Function : Handle wrong input errors -->
+        {% if form.errors %}
+            <div class="alert alert-danger" role="alert">
+                {% for field in form %}
+                    {% if field.errors %}
+                    <strong>{{ field.errors}}</strong>
+                    {{ field.errors }}
+             0       {% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
+<!-- Function End -->
+
+<!-- Input Section -->
+        <div class = "form-group">
+            <label for="pubName">Pub Name</label>
+            <input type="text" class="form-control" name="pubName" id="pubName" value="{{ form.pubName.value|default_if_none:''}}">
+        </div>
+        <div class = "form-group">
+            <label for="city">City</label>
+            <input type="text" class="form-control" name="city" id="city" value="{{ form.city.value|default_if_none:''}}">
+        </div>
+        <div class = "form-group">
+            <label for="streetName">Street Name</label>
+            <input type="text" class="form-control" name="streetName" id="streetName" value="{{ form.streetName.value|default_if_none:''}}">
+        </div>
+        <div class = "form-group">
+            <label for="postcode">Postcode</label>
+            <input type="text" class="form-control" name="postcode" id="postcode" value="{{ form.postcode.value|default_if_none:''}}">
+        </div>
+        <div class = "form-group">
+            <label for="picture">Picture</label>
+            <input type="file" class="form-control" name="picture" id="picture" value="{{ form.picture.value|default_if_none:''}}">
+        </div>
+
+        <button type="submit" class="btb btb-prinnary">Save</button>
+    </form>
+<!-- Pub Form End-->
+</div>
+{% endblock %}

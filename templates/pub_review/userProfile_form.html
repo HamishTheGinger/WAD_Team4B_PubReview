@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <h5 class="my-3 border-bottm pb-2">Upload a Profile</h5>
+
+<!-- Pub Form -->
+    <form method="post" class="post-form my-3">
+        {% csrf_token %}
+<!-- Function : Handle wrong input errors -->
+        {% if userProfile_form.errors %}
+            <div class="alert alert-danger" role="alert">
+                {% for field in userProfile_form %}
+                    {% if field.errors %}
+                    <strong>{{ field.errors}}</strong>
+                    {{ field.errors }}
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% if top5_pubs_form.errors %}
+            <div class="alert alert-danger" role="alert">
+                {% for field in top5_pubs_form %}
+                    {% if field.errors %}
+                    <strong>{{ field.errors}}</strong>
+                    {{ field.errors }}
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
+<!-- Function End -->
+
+<!-- Input Section -->
+        <div class = "form-group">
+            <label for="firstName">First Name</label>
+            <input type="text" class="form-control" name="firstName" id="firstName" value="{{ userProfile_form.firstName.value|default_if_none:''}}">
+        </div>
+        <div class = "form-group">
+            <label for="lastName">Last Name</label>
+            <input type="text" class="form-control" name="lastName" id="lastName" value="{{ userProfile_form.lastName.value|default_if_none:''}}">
+        </div>
+        <div class = "form-group">
+            <label for="sex">Sex</label>
+            <input type="text" class="form-control" name="sex" id="sex" value="{{ userProfile_form.sex.value|default_if_none:''}}">
+        </div>
+        <div class = "form-group">
+            <label for="age">Age</label>
+            <input type="text" class="form-control" name="age" id="age" value="{{ userProfile_form.age.value|default_if_none:''}}">
+        </div>
+        <div class = "form-group">
+            <label for="nationality">Nationality</label>
+            <input type="text" class="form-control" name="nationality" id="nationality" value="{{ userProfile_form.nationality.value|default_if_none:''}}">
+        </div>
+        <div class = "form-group">
+            <label for="picture">Picture</label>
+            <input type="file" class="form-control" name="picture" id="picture" value="{{ userProfile_form.picture.value|default_if_none:''}}">
+        </div>
+        <div class = "form-group">
+            <label for="pub1">Top1 Pub</label>
+            <input type="text" class="form-control" name="pub1" id="pub1" value="{{ top5_pubs_form.pub1.value|default_if_none:''}}">
+        </div>
+        <div class = "form-group">
+            <label for="pub2">Top2 Pub</label>
+            <input type="text" class="form-control" name="pub2" id="pub2" value="{{ top5_pubs_form.pub2.value|default_if_none:''}}">
+        </div>
+        <div class = "form-group">
+            <label for="pub3">Top3 Pub</label>
+            <input type="text" class="form-control" name="pub3" id="pub3" value="{{ top5_pubs_form.pub3.value|default_if_none:''}}">
+        </div>
+        <div class = "form-group">
+            <label for="pub4">Top4 Pub</label>
+            <input type="text" class="form-control" name="pub4" id="pub4" value="{{ top5_pubs_form.pub4.value|default_if_none:''}}">
+        </div>
+        <div class = "form-group">
+            <label for="pub5">Top5 Pub</label>
+            <input type="text" class="form-control" name="pub5" id="pub5" value="{{ top5_pubs_form.pub5.value|default_if_none:''}}">
+        </div>
+
+        <button type="submit" class="btb btb-prinnary">Save</button>
+    </form>
+<!-- Pub Form End-->
+</div>
+{% endblock %}

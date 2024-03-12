@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% if top5_pubs %}
+{% for pub in top5_pubs %}
+    <a href="{% url 'pub_review:pubDetail' pub.id %}">{{ pub.pubName }}</a>
+{% endfor %}
+{% endif %}
+{% if recent_reviews %}
+{% for review in recent_reviews %}
+     <a href="{% url 'pub_review:reviewDetail' pub_id=review.pub.id review_id=review.id %}">{{ review.subject }}</a>
+{% endfor %}
+{% endif %}
+
+{% endblock %}
