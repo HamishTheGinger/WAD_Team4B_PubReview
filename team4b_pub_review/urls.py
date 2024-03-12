@@ -18,6 +18,7 @@ from django.urls import path, include
 from pub_review import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('', views.index),
     path('pub_review/',include('pub_review.urls')),
+    path('admin/', admin.site.urls),
 ]
