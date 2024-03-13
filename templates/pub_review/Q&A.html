@@ -17,6 +17,7 @@
     <tr class="text-center thead - dark">
       <th>Number</th>
       <th style="width:50%" class="text-left">Title</th>
+      <th>Pub</th>
       <th>Author</th>
       <th>Post Time</th>
     </tr>
@@ -35,6 +36,14 @@
         <!-- Question Object -->
         <td class="text-left">
             <a href="{% url 'pub_review:detail' question.id %}">{{question.subject}}</a>
+        </td>
+        <td>
+            {% if question.pub %}
+            <a href="{% url 'pub_review:pubDetail' question.pub.id %}">{{question.pub.pubName}}</a>
+            {% else %}
+            -
+            {% endif %}
+
         </td>
         <td>
            <a href="{% url 'pub_review:userProfile' user_id=question.author.id%}"> {{ question.author.username}}</a>

@@ -11,7 +11,9 @@
       </div>
       <div class="d-flex justify-content-end">
         <div class="badge badge-light p-2 text-left">
-          <div class ="mb-2">{{ question.author.username }}</div>
+          <div class ="mb-2">
+            <a href="{% url 'pub_review:userProfile' user_id=question.author.id%}">{{ question.author.username }}</a>
+          </div>
           <div>{{ question.create_date }}</div>
         </div>
       </div>
@@ -72,6 +74,7 @@
     {% endif %}
 
 <!-- Function End -->
+    <h5>Add Answer</h5>
     <div class = "form-group">
       <textarea name="content" id="content" class="form-control" rows="10"></textarea>
     </div>

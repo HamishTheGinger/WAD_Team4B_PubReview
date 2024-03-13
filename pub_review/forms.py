@@ -1,5 +1,5 @@
 from django import forms
-from pub_review.models import Question, Answer, UserProfile,Pub,Review,Pub_Answer,Pub_Question,FavoritePubs
+from pub_review.models import Question, Answer, UserProfile,Pub,Review,FavoritePubs
 from django.contrib.auth.models import User
 class QuestionForm(forms.ModelForm):
     class Meta:
@@ -56,23 +56,6 @@ class ReviewForm(forms.ModelForm):
     class Meta:
         model = Review
         fields = ['subject','content','picture']
-
-class Pub_QuestionForm(forms.ModelForm):
-    class Meta:
-        model = Pub_Question
-        fields = ['subject','content']
-        labels ={
-            'subject':'Title',
-            'content':'Content',
-        }
-
-class Pub_AnswerForm(forms.ModelForm):
-    class Meta:
-        model = Pub_Answer
-        fields = ['content']
-        label ={
-            "content": 'Answer',
-        }
 
 class FavoritePubForm(forms.ModelForm):
     class Meta:

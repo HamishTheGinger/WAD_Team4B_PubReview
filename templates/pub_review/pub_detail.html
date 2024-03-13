@@ -14,16 +14,12 @@
         <div class="col-md-8 profile-simple">
           <div class="d-flex">
             <div class="flex-shrink-0">
-              <h3>Profile Picture</h3>
+              <h3>{{ pub.pubName }}</h3>
               {% if pub.picture %}
                 <img src="{{ pub.picture.url }}" alt="{{ pub.pubName }}'s Profile Picture">
               {% else %}
                  <p>No profile picture available.</p>
               {% endif %}
-            </div>
-            <div class="flex-grow-1 ms-3">
-              <h3>Pub Name</h3>
-                <p>{{ pub.pubName }}</p>
             </div>
           </div>
         </div>
@@ -31,7 +27,7 @@
           <div class="row profile-detail">
             <div class="col-6">
                 <h3>Owner</h3>
-                <p>{{ pub.owner }}</p>
+                <a href="{% url 'pub_review:userProfile' user_id=pub.owner.id%}">{{ pub.owner }}</a>
             </div>
             <div class="col-6">
                 <h3>City</h3>
@@ -55,11 +51,13 @@
       </div>
       <div class="row">
           <div class="container my-3">
+            <h5>Reviews</h5>
+
               <table class="table">
                 <thead>
                 <tr class="text-center thead - dark">
                   <th>Number</th>
-                  <th style="width:50%">Subject</th>
+                  <th style="width:50%" class="text-left">Subject</th>
                   <th>Author</th>
                 </tr>
                 </thead>
@@ -72,7 +70,7 @@
                         <a href="{% url 'pub_review:reviewDetail' pub.id review.id %}">{{ review.subject }}</a>
                     </td>
                     <td>
-                        {{ review.author.username}}
+                        <a href="{% url 'pub_review:userProfile' user_id=review.author.id %}">{{ review.author.username}}</a>
                     </td>
                     <!-- Question Object End-->
                 </tr>
@@ -81,7 +79,7 @@
             <!-- Else -->
                 {% else %}
                 <tr>
-                    <td colspan="3"> NO review</td>
+                    <td colspan="3">No Reviews</td>
                 </tr>
                 {% endif %}
                 </tbody>
@@ -131,84 +129,91 @@
                     Post a Review
                 </a>
           </div>
-      </div>
-    <div class="container my-3">
-            <table class="table">
-                <thead>
-                    <tr class="text-center thead - dark">
-                        <th>Number</th>
-                        <th style="width:50%">Subject</th>
-                        <th>Author</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% if question_list %}
-                    {% for question in question_list %}
-                    <tr class="text-center">
-                        <td>{{ question_list.paginator.count|sub:question_list.start_index|sub:forloop.counter0|add:1 }}</td>
-                        <td class="text-left">
-                            <a href="{% url 'pub_review:Pub_QuestionDetail' pub_id=pub.id Pub_Question_id=question.id %}">{{ question.subject }}</a>
-                        </td>
-                        <td>
-                            {{ question.author.username}}
-                        </td>
-                        <!-- Question Object End-->
-                    </tr>
-                    {% endfor %}
-
-                <!-- Else -->
-                    {% else %}
-                    <tr>
-                        <td colspan="3"> NO question</td>
-                    </tr>
-                    {% endif %}
-                </tbody>
-                <!-- Question list End -->
-
-            </table>
-                <!-- Function : Show 10 questions for each page -->
-                <ul class="pagination justify-content-center">
-                        <!-- Previous Page -->
-                        {% if question_list.has_previous %}
-                        <li class="page-item">
-                            <a class="page-link" data-page="?page2={{ question_list.previous_page_number }}" href="#">Prev</a>
-                        </li>
+          <div class="container my-3">
+            <h5>Questions</h5>
+                <table class="table">
+                    <thead>
+                        <tr class="text-center thead - dark">
+                            <th>Number</th>
+                            <th style="width:50%" class="text-left">Subject</th>
+                            <th>Author</th>
+                            <th>Post Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if question_list %}
+                        {% for question in question_list %}
+                        <tr class="text-center">
+                            <td>{{ question_list.paginator.count|sub:question_list.start_index|sub:forloop.counter0|add:1 }}</td>
+                            <td class="text-left">
+                                <a href="{% url 'pub_review:Pub_QuestionDetail' pub_id=pub.id Pub_Question_id=question.id %}">{{ question.subject }}</a>
+                            </td>
+                            <td>
+                                <a href="{% url 'pub_review:userProfile' user_id=question.author.id%}"> {{ question.author.username}}</a>
+                             </td>
+                             <td>
+                                 {{ question.create_date}}
+                             </td>
+                            <!-- Question Object End-->
+                        </tr>
+                        {% endfor %}
+    
+                    <!-- Else -->
                         {% else %}
-                        <li class="page-item disabled">
-                            <a class="page-link" tabindex="-1" aria-disabled="true" href="#">Prev</a>
-                        </li>
+                        <tr>
+                            <td colspan="3">No Questions</td>
+                        </tr>
                         {% endif %}
-
-                        <!-- Page List -->
-                        {% for page_number in question_list.paginator.page_range %}
-                        {% if page_number >= question_list.number|add:-5 and page_number <= question_list.number|add:5 %}
-                            {% if page_number == question_list.number %}
-                            <li class="page-item active" aria-current="page">
-                                <a class="page-link" data-page="{{ page_number }}" href="#">{{ page_number }}</a>
+                    </tbody>
+                    <!-- Question list End -->
+    
+                </table>
+                    <!-- Function : Show 10 questions for each page -->
+                    <ul class="pagination justify-content-center">
+                            <!-- Previous Page -->
+                            {% if question_list.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" data-page="?page2={{ question_list.previous_page_number }}" href="#">Prev</a>
                             </li>
                             {% else %}
-                            <li class="page-item">
-                                <a class="page-link" data-page="{{ page_number }}" href="#">{{ page_number }}</a>
+                            <li class="page-item disabled">
+                                <a class="page-link" tabindex="-1" aria-disabled="true" href="#">Prev</a>
                             </li>
                             {% endif %}
-                        {% endif %}
-                        {% endfor %}
+    
+                            <!-- Page List -->
+                            {% for page_number in question_list.paginator.page_range %}
+                            {% if page_number >= question_list.number|add:-5 and page_number <= question_list.number|add:5 %}
+                                {% if page_number == question_list.number %}
+                                <li class="page-item active" aria-current="page">
+                                    <a class="page-link" data-page="{{ page_number }}" href="#">{{ page_number }}</a>
+                                </li>
+                                {% else %}
+                                <li class="page-item">
+                                    <a class="page-link" data-page="{{ page_number }}" href="#">{{ page_number }}</a>
+                                </li>
+                                {% endif %}
+                            {% endif %}
+                            {% endfor %}
+    
+                            <!-- Next Page -->
+                            {% if question_list.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" data-page="{{ question_list.next_page_number }}" href="#">Next</a>
+                            </li>
+                            {% else %}
+                            <li class="page-item disabled">
+                                <a class="page-link" tabindex="-1" aria-disabled="true" href="#">Next</a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                        <a href = "{% url 'pub_review:Pub_Question_create' pub.id%}" class="btn btn-primary">
+                            Ask a Question
+                        </a>
+                  </div>
+      </div>
 
-                        <!-- Next Page -->
-                        {% if question_list.has_next %}
-                        <li class="page-item">
-                            <a class="page-link" data-page="{{ question_list.next_page_number }}" href="#">Next</a>
-                        </li>
-                        {% else %}
-                        <li class="page-item disabled">
-                            <a class="page-link" tabindex="-1" aria-disabled="true" href="#">Next</a>
-                        </li>
-                        {% endif %}
-                    </ul>
-                    <a href = "{% url 'pub_review:Pub_Question_create' pub.id%}" class="btn btn-primary">
-                        Ask a Question
-                    </a>
-              </div>
+
         </div>
 
     <div class="col-md-3">
@@ -216,7 +221,7 @@
     </div>
     <div class="col-md-3">
           <a href="{% url 'pub_review:pub_modify' pub_id=pub.id%}" class="btn btn-sm btn-outline-secondary">Edit the Pub</a>
-          <a href="#" class="delete btn btn-sm btn-outline-secondary" data-uri="{% url 'pub_review:pub_delete' pub_id=pub.id %}">Delete the pub</a>
+          <a href="#" class="delete btn btn-sm btn-outline-danger" data-uri="{% url 'pub_review:pub_delete' pub_id=pub.id %}">Delete the pub</a>
     </div>
 {% endblock %}
 {% block script %}
