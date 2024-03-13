@@ -32,7 +32,7 @@ def populate():
         {'owner': users_data[1], 'pub_name': 'Pub 2', 'city': 'Glasgow', 'street_name': '56 Arygle Street', 'postcode': 'G2 8AG'},
         {'owner': users_data[2], 'pub_name': 'Pub 3', 'city': 'Glasgow', 'street_name': 'University Ave', 'postcode': 'G12 8SP'},
         {'owner': users_data[3], 'pub_name': 'Pub 4', 'city': 'Glasgow', 'street_name': '17 Vinicombe St', 'postcode': 'G12 8SJ'},
-        {'owner': users_data[4], 'pub_name': 'Pub 5', 'city': 'Glasgow', 'street_name': 'Byres Rd, Glasgow G12 8QX', 'postcode': ''},
+        {'owner': users_data[4], 'pub_name': 'Pub 5', 'city': 'Glasgow', 'street_name': 'Byres Rd', 'postcode': 'G12 8QX'},
         {'owner': users_data[5], 'pub_name': 'Pub 6', 'city': 'Glasgow', 'street_name': '106 Arygle Street', 'postcode': ''},
     ]
 
