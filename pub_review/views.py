@@ -9,7 +9,6 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import auth,messages
 from django.db.models import Q
-from team4b_pub_review.settings import gmk
 # Create your views here.
 
 def index(request):
@@ -18,7 +17,8 @@ def index(request):
     context ={'top5_pubs':top5_pubs, 'recent_reviews':recent_reviews}
 
     # Google Maps Integration
-    key = gmk
+    key = "AIzaSyB5Prlm7hNvW0P2uxPQ71FKdZUsAFHhoUM"
+
     placeData = [top5_pubs[0].pubName, top5_pubs[0].streetName, top5_pubs[0].city]  # array of strings, containing pub name, street address, city
     for counter in range (0,3):
         placeData[counter] = placeData[counter].replace(" ", "%20") # maps api uses %20 for spaces
@@ -238,7 +238,7 @@ def showPub(request,pub_id):
     context = {'review_list': page_obj_review, 'page1': page_review, 'pub': pub,'question_list':page_obj_question,'page2':page_question}
     
     # Google Maps Integration
-    key = gmk
+    key = "AIzaSyB5Prlm7hNvW0P2uxPQ71FKdZUsAFHhoUM"
     placeData = [pub.pubName, pub.streetName, pub.city]  # array of strings, containing pub name, street address, city
     for counter in range (0,3):
         placeData[counter] = placeData[counter].replace(" ", "%20") # maps api uses %20 for spaces

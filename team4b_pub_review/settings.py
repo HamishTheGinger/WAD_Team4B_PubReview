@@ -28,8 +28,6 @@ SECRET_KEY = '2@uj06lw(r4+#$uo$$9ue9d&4*rx$+2f$aw#foxax^y@lrb3&('
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# gmk
-KEY = "AIzaSyB5Prlm7hNvW0P2uxPQ71FKdZUsAFHhoUM"
 
 ALLOWED_HOSTS = []
 
