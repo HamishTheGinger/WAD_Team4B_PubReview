@@ -54,10 +54,11 @@
             <label for="picture">Picture</label>
             <input type="file" class="form-control" name="picture" id="picture" value="{{ userProfile_form.picture.value|default_if_none:''}}">
         </div>
+        <h5>Top 5 Pubs</h5>
         <div class = "form-group">
             <label for="pub1">Top1 Pub</label>
             <select name="pub1" id="pub1" class="form-select">
-                {% if top5_pubs_form.pub1.value %}
+                {% if top5_pubs_form.pub1.value != 'None' %}
                 <option>None</option>
                 <option selected>{{ top5_pubs_form.pub1.value}}</option>
                 {% else %}
@@ -71,7 +72,7 @@
         <div class = "form-group">
             <label for="pub2">Top2 Pub</label>
             <select name="pub2" id="pub2" class="form-select">
-                {% if top5_pubs_form.pub2.value %}
+                {% if top5_pubs_form.pub2.value != 'None' %}
                 <option>None</option>
                 <option selected>{{ top5_pubs_form.pub2.value}}</option>
                 {% else %}
@@ -85,7 +86,7 @@
         <div class = "form-group">
             <label for="pub3">Top3 Pub</label>
             <select name="pub3" id="pub3" class="form-select">
-                {% if top5_pubs_form.pub3.value %}
+                {% if top5_pubs_form.pub3.value != 'None' %}
                 <option>None</option>
                 <option selected>{{ top5_pubs_form.pub3.value}}</option>
                 {% else %}
@@ -99,7 +100,7 @@
         <div class = "form-group">
             <label for="pub4">Top4 Pub</label>
             <select name="pub4" id="pub4" class="form-select">
-                {% if top5_pubs_form.pub4.value %}
+                {% if top5_pubs_form.pub4.value != 'None' %}
                 <option>None</option>
                 <option selected>{{ top5_pubs_form.pub4.value}}</option>
                 {% else %}
@@ -112,8 +113,8 @@
         </div>
         <div class = "form-group">
             <label for="pub5">Top5 Pub</label>
-            <select name="pub1" id="pub1" class="form-select">
-                {% if top5_pubs_form.pub5.value %}
+            <select name="pub5" id="pub5" class="form-select">
+                {% if top5_pubs_form.pub5.value != 'None' %}
                 <option>None</option>
                 <option selected>{{ top5_pubs_form.pub5.value}}</option>
                 {% else %}
