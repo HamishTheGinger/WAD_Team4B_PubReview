@@ -10,7 +10,7 @@ class UserProfile(models.Model):
     firstName = models.CharField(max_length=128,blank= True,null=True)
     lastName = models.CharField(max_length=128,blank=True,null=True)
     sex = models.CharField(max_length=10,blank=True,null=True)
-    age = models.CharField(max_length=10,blank=True,null=True)
+    age = models.IntegerField(max_length=10,blank=True,null=True)
     nationality = models.CharField(max_length=40,blank=True,null=True)
 
     def __str__(self):
