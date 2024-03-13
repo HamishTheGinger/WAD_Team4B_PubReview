@@ -4,7 +4,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'team4b_pub_review.settings')
 import django
 django.setup()
 
-from pub_review.models import UserProfile, Answer, Question, Pub, FavoritePubs, Review
+from pub_review.models import User, UserProfile, Answer, Question, Pub, FavoritePubs, Review
 from datetime import timezone
 
 def populate():
@@ -60,46 +60,60 @@ def populate():
         create_user_profile(**user_data)
 
     for pub_data in pubs_data:
-        create_pub(**pub_data)
+        ownerInstance = getUserByUsername(pub_data['owner']['username'])
+        create_pub(**pub_data, ownerInstance)
 
     for question_data in questions_data:
-        create_question(**question_data)
+        authorInstance = getUserByUsername(question_data['author']['username'])
+        create_question(**question_data, authorInstance)
 
     for answer_data in answers_data:
-        create_answer(**answer_data)
+        authorInstance = getUserByUsername(answer_data['author']['username'])
+        create_answer(**answer_data, authorInstance)
 
     for review_data in reviews_data:
-        create_review(**review_data)
+        authorInstance = getUserByUsername(review_data['author']['username'])
+        create_review(**review_data, authorInstance)
 
     # Populate Database tables
-    def create_user_profile(first_name, last_name, sex, age, nationality):
+    def create_user_profile(username, password, email, first_name, last_name, sex, age, nationality):
         # don't know how to set User model variables
-        profile = UserProfile.objects.get_or_create(firstName=first_name, lastName=last_name, sex=sex, age=age, nationality=nationality)[0]
+        userInstance = User.objects.get_or_create(username, password, email)
+        userInstance.save()
+        profile = UserProfile.objects.get_or_create(user=userInstance, firstName=first_name, lastName=last_name, sex=sex, age=age, nationality=nationality)[0]
         profile.save()
         return profile
 
-    def create_pub(owner, pub_name, city, street_name, postcode):
-        pub = Pub.objects.get_or_create(owner=owner, pubName=pub_name, city=city, streetName=street_name, postcode=postcode)[0]
+    def create_pub(pub_name, city, street_name, postcode, ownerInstance):
+        pub = Pub.objects.get_or_create(owner=ownerInstance, pubName=pub_name, city=city, streetName=street_name, postcode=postcode)[0]
         pub.save()
         return pub
 
-    def create_question(author, pub, subject, content):
-        question = Question.objects.get_or_create(author=author, pub=pub, subject=subject, content=content, create_date=timezone.now())[0]
+    def create_question(authorInstance, pub, subject, content): 
+        question = Question.objects.get_or_create(author=authorInstance, pub=pub, subject=subject, content=content, create_date=timezone.now())[0]
         question.save()
         return question
 
-    def create_answer(author, question, pub, content):
-        answer = Answer.objects.get_or_create(author=author, question=question, pub=pub, content=content, create_date=timezone.now())[0]
+    def create_answer(authorInstance, question, pub, content):
+        answer = Answer.objects.get_or_create(author=authorInstance, question=question, pub=pub, content=content, create_date=timezone.now())[0]
         answer.save()
         return answer
 
-    def create_review(author, pub, subject, content):
-        review = Review.objects.get_or_create(author=author, pub=pub, subject=subject, content=content, create_date=timezone.now())[0]
+    def create_review(authorInstance, pub, subject, content):
+        review = Review.objects.get_or_create(author=authorInstance, pub=pub, subject=subject, content=content, create_date=timezone.now())[0]
         review.save()
         return review
+    
+    # helper function, returns user object instance matching username passed
+    def getUserByUsername(usernameString):
+        try:
+            userObject = User.objects.get(username = usernameString)
+            return userObject
+        except:
+            return None
+
 
 # Start execution here!
 if __name__ == '__main__':
     print('Starting population script...')
     populate()    
-
