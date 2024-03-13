@@ -9,13 +9,26 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import auth,messages
 from django.db.models import Q
+from team4b_pub_review.settings import gmk
 # Create your views here.
 
 def index(request):
     top5_pubs = Pub.objects.order_by('voter')[:5]
     recent_reviews= Review.objects.order_by('-create_date')[:5]
     context ={'top5_pubs':top5_pubs, 'recent_reviews':recent_reviews}
+
+    # Google Maps Integration
+    key = gmk
+    placeData = [top5_pubs[0].pubName, top5_pubs[0].streetName, top5_pubs[0].city]  # array of strings, containing pub name, street address, city
+    for counter in range (0,3):
+        placeData[counter] = placeData[counter].replace(" ", "%20") # maps api uses %20 for spaces
+
+    mapURL = "https://www.google.com/maps/embed/v1/place?key={0}&q={1},{2},{3}".format(key,placeData[0],placeData[1],placeData[2])
+
+    context['MapURL'] = mapURL
+
     return render(request,'pub_review/home.html',context)
+
 def list_questions(request):
     page = request.GET.get('page', 1)  # Page
     kw = request.GET.get('kw','')
@@ -223,6 +236,15 @@ def showPub(request,pub_id):
     page_obj_question = paginator_question.get_page(page_question)
 
     context = {'review_list': page_obj_review, 'page1': page_review, 'pub': pub,'question_list':page_obj_question,'page2':page_question}
+    
+    # Google Maps Integration
+    key = gmk
+    placeData = [pub.pubName, pub.streetName, pub.city]  # array of strings, containing pub name, street address, city
+    for counter in range (0,3):
+        placeData[counter] = placeData[counter].replace(" ", "%20") # maps api uses %20 for spaces
+    mapURL = "https://www.google.com/maps/embed/v1/place?key={0}&q={1},{2},{3}".format(key,placeData[0],placeData[1],placeData[2])
+    context['MapURL'] = mapURL
+
     return render(request,'pub_review/pub_detail.html',context)
 
 @login_required(login_url='pub_review:login')
