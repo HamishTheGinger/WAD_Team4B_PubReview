@@ -209,12 +209,10 @@ def list_pubs(request):
 @login_required(login_url='pub_review:login')
 def pub_create(request):
     if request.method == 'POST':
-        form = PubProfileForm(request.POST)
+        form = PubProfileForm(request.POST, request.FILES) 
         if form.is_valid():
             pub = form.save(commit=False)
             pub.owner = request.user
-            if 'picture' in request.FILES:
-                pub.picture = request.FILES['picture']
             pub.save()
             return redirect('pub_review:search')
     else:
@@ -255,11 +253,9 @@ def pub_modify(request,pub_id):
         return redirect('pub_review:pubDetail',pub_id=pub.id)
 
     if request.method =="POST":
-        form = PubProfileForm(request.POST,instance=pub)
+        form = PubProfileForm(request.POST, request.FILES, instance=pub)
         if form.is_valid():
             pub = form.save(commit=False)
-            if 'picture' in request.FILES:
-                pub.picture = request.FILES['picture']
             pub.save()
             return redirect('pub_review:pubDetail',pub_id=pub.id)
     else:
@@ -282,11 +278,12 @@ def showReview(request,pub_id,review_id):
     review = Review.objects.filter(pub=pub, pk=review_id).get()
     context = {'review': review, 'pub':pub,}
     return render(request,'pub_review/review_detail.html',context)
+
 @login_required(login_url='pub_review:login')
 def review_create(request, pub_id):
     pub = get_object_or_404(Pub, pk=pub_id)
     if request.method == "POST":
-        form = ReviewForm(request.POST)
+        form = ReviewForm(request.POST, request.FILES)
         if form.is_valid():
             review = form.save(commit=False)
             review.author = request.user
@@ -308,7 +305,7 @@ def review_modify(request,pub_id,review_id):
         return redirect('pub_review:pubDetail',pub_id=pub.id)
 
     if request.method =="POST":
-        form = ReviewForm(request.POST,instance=review)
+        form = ReviewForm(request.POST, request.FILES, instance=review)
         if form.is_valid():
             review = form.save(commit=False)
             review.author = request.user
@@ -474,7 +471,7 @@ def userProfile_modify(request,user_id):
         return redirect('pub_review:userProfile', user_id=user_id)
 
     if request.method == "POST":
-        userprofile_form = UserProfileForm(request.POST, instance=userprofile)
+        userprofile_form = UserProfileForm(request.POST, request.FILES, instance=userprofile)
         top5_pubs_form = FavoritePubForm(request.POST, instance=top5_pubs)
         if userprofile_form.is_valid() and top5_pubs_form.is_valid():
             userprofile_form.save()

@@ -42,7 +42,7 @@ class UserProfileForm(forms.ModelForm):
             'picture': 'User_Image',
             'firstName': 'First_Name',
             'lastName': 'Last_Name',
-            'sex': 'Sex',
+            'sex': 'Gender',
             'age': 'Age',
             'nationality': 'Nationality'
         }

@@ -4,7 +4,7 @@
     <h5 class="my-3 border-bottm pb-2">Post a Review</h5>
 
 
-    <form method="post" class="post-form my-3">
+    <form method="post" class="post-form my-3" enctype="multipart/form-data">
         {% csrf_token %}
 <!-- Function : Handle wrong input errors -->
         {% if form.errors %}
