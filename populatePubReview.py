@@ -79,8 +79,6 @@ def populate():
         pubInstance = getPubByPubname(answer_data['pub']['pub_name'])
         questInstance = getQuestionByName(answer_data['question']['subject'])
 
-        print(questInstance)
-
         create_answer(**answer_data, authorInstance = authorInstance, questionInstance=questInstance, pubInstnace=pubInstance)
 
     for review_data in reviews_data:
@@ -102,7 +100,6 @@ def create_user_profile(username, password, email, first_name, last_name, sex=No
     return profile
 
 def create_pub(owner, pub_name, city, street_name, postcode, ownerInstance):
-    print("Hello World")
     pub = Pub.objects.get_or_create(owner=ownerInstance, pubName=pub_name, city=city, streetName=street_name, postcode=postcode)[0]
     pub.save()
     return pub
@@ -118,7 +115,6 @@ def create_answer(author, question, pub, content,authorInstance, questionInstanc
     return answer
 
 def create_review(author, pub, subject, content, authorInstance, pubInstance=None):
-    print(pubInstance)
     review = Review.objects.get_or_create(author=authorInstance, pub=pubInstance, subject=subject, content=content, create_date=timezone.now())[0]
     review.save()
     return review
@@ -139,7 +135,6 @@ def getPubByPubname(pubnameString):
         return None
     
 def getQuestionByName(questionNameString):
-    print(questionNameString)
     try:
         QuestObject = Question.objects.get(subject = questionNameString)
         return QuestObject
@@ -150,4 +145,6 @@ def getQuestionByName(questionNameString):
 # Start execution here!
 if __name__ == '__main__':
     print('Starting population script...')
-    populate()    
+    populate()   
+    print('Database Populated')
+ 

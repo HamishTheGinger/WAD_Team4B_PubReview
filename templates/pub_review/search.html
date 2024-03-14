@@ -8,12 +8,14 @@
 <div class="container my-3">
     <h4>Search Pubs</h4>
 
-    <div class="col-4 input-group">
-            <input type="text" class="form-control kw" placeholder="Pub Name" value="{{ kw|default_if_none:'' }}">
+        <form action="{% url 'pub_review:search' %}" method="get">
+            <div class="col-4 input-group">
+            <input name="search" type="text" class="form-control kw" placeholder="Pub Name" value="{{ kw|default_if_none:'' }}">
             <div class="input-group-append">
                 <button class="btn btn-outline-secondary" type="button" id="btn_search">Search</button>
             </div>
         </div>
+        </form>
         <br>
   <table class="table">
     <thead>

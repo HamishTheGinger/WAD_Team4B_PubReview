@@ -33,6 +33,12 @@ def list_questions(request):
     page = request.GET.get('page', 1)  # Page
     kw = request.GET.get('kw','')
     question_list = Question.objects.order_by('-create_date')
+
+    search = request.GET.get("qSearch")
+
+    if search != None:
+     question_list = Question.objects.filter(subject__contains=search)
+
     if kw:
         question_list = question_list.filter(
             Q(subject__icontains=kw) |
@@ -198,6 +204,12 @@ def user_logout(request):
 def list_pubs(request):
     page = request.GET.get('page', 1)  # Page
     pub_list = Pub.objects.order_by('pubName')
+
+    #search = Seach
+    search = request.GET.get("search")
+
+    if search != None:
+     pub_list = Pub.objects.filter(pubName__contains=search)
 
     # Paging
     paginator = Paginator(pub_list, 10)
