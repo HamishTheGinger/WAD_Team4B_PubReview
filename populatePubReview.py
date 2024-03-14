@@ -5,7 +5,11 @@ import django
 django.setup()
 
 from pub_review.models import User, UserProfile, Answer, Question, Pub, FavoritePubs, Review
-from datetime import timezone
+from datetime import datetime
+from django.utils import timezone
+from pytz import utc
+
+
 
 def populate():
     """
@@ -61,56 +65,77 @@ def populate():
 
     for pub_data in pubs_data:
         ownerInstance = getUserByUsername(pub_data['owner']['username'])
-        create_pub(**pub_data, ownerInstance)
+        create_pub(**pub_data, ownerInstance = ownerInstance)
 
     for question_data in questions_data:
         authorInstance = getUserByUsername(question_data['author']['username'])
-        create_question(**question_data, authorInstance)
+        pubInstance = getPubByPubname(question_data['pub']['pub_name'])
+        create_question(**question_data, authorInstance= authorInstance)
 
     for answer_data in answers_data:
         authorInstance = getUserByUsername(answer_data['author']['username'])
-        create_answer(**answer_data, authorInstance)
+        pubInstance = getPubByPubname(answer_data['pub']['pub_name'])
+        questInstance = getQuestionByName(answer_data['question']['subject'])
+
+        create_answer(**answer_data, authorInstance = authorInstance, questionInstance=questInstance, pubInstnace=pubInstance)
 
     for review_data in reviews_data:
         authorInstance = getUserByUsername(review_data['author']['username'])
-        create_review(**review_data, authorInstance)
+        pubInstance = getPubByPubname(review_data['pub']['pub_name'])
 
-    # Populate Database tables
-    def create_user_profile(username, password, email, first_name, last_name, sex, age, nationality):
-        # don't know how to set User model variables
-        userInstance = User.objects.get_or_create(username, password, email)
-        userInstance.save()
-        profile = UserProfile.objects.get_or_create(user=userInstance, firstName=first_name, lastName=last_name, sex=sex, age=age, nationality=nationality)[0]
-        profile.save()
-        return profile
+        create_review(**review_data, authorInstance = authorInstance, pubInstance=pubInstance)
 
-    def create_pub(pub_name, city, street_name, postcode, ownerInstance):
-        pub = Pub.objects.get_or_create(owner=ownerInstance, pubName=pub_name, city=city, streetName=street_name, postcode=postcode)[0]
-        pub.save()
-        return pub
+# Populate Database tables
+def create_user_profile(username, password, email, first_name, last_name, sex=None, age=None, nationality=None):
+    # don't know how to set User model variables
+    userInstance = User.objects.create_user(username=username, password=password, email=email)
+    userInstance.save()
+    profile = UserProfile.objects.get_or_create(user=userInstance, firstName=first_name, lastName=last_name, sex=sex, age=age, nationality=nationality)[0]
+    profile.save()
+    return profile
 
-    def create_question(authorInstance, pub, subject, content): 
-        question = Question.objects.get_or_create(author=authorInstance, pub=pub, subject=subject, content=content, create_date=timezone.now())[0]
-        question.save()
-        return question
+def create_pub(owner, pub_name, city, street_name, postcode, ownerInstance):
+    print("Hello World")
+    pub = Pub.objects.get_or_create(owner=ownerInstance, pubName=pub_name, city=city, streetName=street_name, postcode=postcode)[0]
+    pub.save()
+    return pub
 
-    def create_answer(authorInstance, question, pub, content):
-        answer = Answer.objects.get_or_create(author=authorInstance, question=question, pub=pub, content=content, create_date=timezone.now())[0]
-        answer.save()
-        return answer
+def create_question(author, pub, subject, content,authorInstance, pubInstnace=None): 
+    question = Question.objects.get_or_create(author=authorInstance, pub=pubInstnace, subject=subject, content=content, create_date=datetime(2024, 10, 17, 15, 30,tzinfo=utc))[0]
+    question.save()
+    return question
 
-    def create_review(authorInstance, pub, subject, content):
-        review = Review.objects.get_or_create(author=authorInstance, pub=pub, subject=subject, content=content, create_date=timezone.now())[0]
-        review.save()
-        return review
+def create_answer(author, question, pub, content,authorInstance, questionInstance, pubInstnace=None):
+    answer = Answer.objects.get_or_create(author=authorInstance, question=questionInstance, pub=pubInstnace, content=content, create_date=timezone.now())[0]
+    answer.save()
+    return answer
+
+def create_review(author, pub, subject, content, authorInstance, pubInstance=None):
+    review = Review.objects.get_or_create(author=authorInstance, pub=pubInstance, subject=subject, content=content, create_date=timezone.now)[0]
+    review.save()
+    return review
+
+# helper function, returns user object instance matching username passed
+def getUserByUsername(usernameString):
+    try:
+        userObject = User.objects.get(username = usernameString)
+        return userObject
+    except:
+        return None
     
-    # helper function, returns user object instance matching username passed
-    def getUserByUsername(usernameString):
-        try:
-            userObject = User.objects.get(username = usernameString)
-            return userObject
-        except:
-            return None
+def getPubByPubname(pubnameString):
+    try:
+        pubObject = Pub.objects.get(name = pubnameString)
+        return pubObject
+    except:
+        return None
+    
+def getQuestionByName(questionNameString):
+    try:
+        QuestObject = Pub.objects.get(subject = questionNameString)
+        return QuestObject
+    except:
+        return None
 
 
 # Start execution here!
