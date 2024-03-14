@@ -96,6 +96,9 @@ def create_user_profile(username, password, email, first_name, last_name, sex=No
     userInstance.save()
     profile = UserProfile.objects.get_or_create(user=userInstance, firstName=first_name, lastName=last_name, sex=sex, age=age, nationality=nationality)[0]
     profile.save()
+    favPub = FavoritePubs.objects.get_or_create(user=profile)
+    #favPub.save()
+
     return profile
 
 def create_pub(owner, pub_name, city, street_name, postcode, ownerInstance):
