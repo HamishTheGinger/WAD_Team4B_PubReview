@@ -65,17 +65,21 @@ def populate():
 
     for pub_data in pubs_data:
         ownerInstance = getUserByUsername(pub_data['owner']['username'])
+
         create_pub(**pub_data, ownerInstance = ownerInstance)
 
     for question_data in questions_data:
         authorInstance = getUserByUsername(question_data['author']['username'])
         pubInstance = getPubByPubname(question_data['pub']['pub_name'])
+
         create_question(**question_data, authorInstance= authorInstance)
 
     for answer_data in answers_data:
         authorInstance = getUserByUsername(answer_data['author']['username'])
         pubInstance = getPubByPubname(answer_data['pub']['pub_name'])
         questInstance = getQuestionByName(answer_data['question']['subject'])
+
+        print(questInstance)
 
         create_answer(**answer_data, authorInstance = authorInstance, questionInstance=questInstance, pubInstnace=pubInstance)
 
@@ -111,7 +115,8 @@ def create_answer(author, question, pub, content,authorInstance, questionInstanc
     return answer
 
 def create_review(author, pub, subject, content, authorInstance, pubInstance=None):
-    review = Review.objects.get_or_create(author=authorInstance, pub=pubInstance, subject=subject, content=content, create_date=timezone.now)[0]
+    print(pubInstance)
+    review = Review.objects.get_or_create(author=authorInstance, pub=pubInstance, subject=subject, content=content, create_date=timezone.now())[0]
     review.save()
     return review
 
@@ -125,14 +130,15 @@ def getUserByUsername(usernameString):
     
 def getPubByPubname(pubnameString):
     try:
-        pubObject = Pub.objects.get(name = pubnameString)
+        pubObject = Pub.objects.get(pubName = pubnameString)
         return pubObject
     except:
         return None
     
 def getQuestionByName(questionNameString):
+    print(questionNameString)
     try:
-        QuestObject = Pub.objects.get(subject = questionNameString)
+        QuestObject = Question.objects.get(subject = questionNameString)
         return QuestObject
     except:
         return None
