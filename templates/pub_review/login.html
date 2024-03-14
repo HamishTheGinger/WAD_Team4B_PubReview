@@ -8,6 +8,13 @@
     </div>
     <form method="post" class="post-form" action="{% url 'pub_review:login' %}">
         {% csrf_token %}
+        {% if messages %}
+        <div class="alert alert-danger my-3" role="alert">
+        {% for message in messages %}
+            {{ message.message }}
+        {% endfor %}
+        </div>
+        {% endif %}
         <input type="hidden" name="next" value="{{ next }}">
         {% include "form_errors.html" %}
         <div class="form-group">
@@ -24,7 +31,7 @@
             <div class="col-8" text-right>
                 <button type="submit" class="btn btn-primary">Login</button>
             <span>
-                <a href="{% url 'pub_review:signup' %}" class="btn btn-outline-secondary">Sign up</a>
+                <a href="{% url 'pub_review:signup' %}" class="btn btn-outline-secondary">Goto Sign up</a>
             </span>
         </div>
         </div>

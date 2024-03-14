@@ -7,15 +7,20 @@
     <form method="post" class="post-form my-3">
         {% csrf_token %}
 <!-- Function : Handle wrong input errors -->
-        {% if form.errors %}
-            <div class="alert alert-danger" role="alert">
-                {% for field in form %}
-                    {% if field.errors %}
-                    <strong>{{ field.errors}}</strong>
-                    {{ field.errors }}
-                    {% endif %}
-                {% endfor %}
+    {% if form.errors %}
+        {% for field in form %}
+            {% for error in field.errors %}  <!-- Print error -->
+                <div class="alert alert-danger">
+                    <strong>{{ field.label }}</strong>
+                    {{ error }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}   <!-- Print Non-field error -->
+            <div class="alert alert-danger">
+                <strong>{{ error }}</strong>
             </div>
+        {% endfor %}
         {% endif %}
 <!-- Function End -->
 

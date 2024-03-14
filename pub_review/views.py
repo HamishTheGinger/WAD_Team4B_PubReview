@@ -165,6 +165,8 @@ def signup(request):
                 auth.login(request, user)
                 user_id = user.id
                 return redirect('pub_review:user_modify', user_id=user_id)
+            elif  request.POST['password1'] != request.POST['password2']: 
+                messages.error(request, 'Passwords do not match')
         else:  
             print(user_form.errors)
     else:
@@ -189,7 +191,12 @@ def user_login(request):
             else:
                 return HttpResponse("Your Pub Reviews account is disabled!")
         else:
-            return HttpResponse("The login details provided were incorrect. ")
+            #return HttpResponse("The login details provided were incorrect. ")
+            messages.error(request, 'Login Details provided were incorrect')
+            return render(request, "pub_review/login.html")
+
+            
+
     # likely a GET request, serve login page to user
     else:
         return render(request, "pub_review/login.html")
@@ -227,10 +234,14 @@ def pub_create(request):
             pub.owner = request.user
             pub.save()
             return redirect('pub_review:search')
+        else:
+            messages.error(request, 'Form Error')
+            print(form.errors)
+
     else:
         form = PubProfileForm()
     context = {'form': form}
-    return render(request, 'pub_review/pub_form.html')
+    return render(request, 'pub_review/pub_form.html', context={"form":form})
 
 def showPub(request,pub_id):
     pub = get_object_or_404(Pub, pk=pub_id)
