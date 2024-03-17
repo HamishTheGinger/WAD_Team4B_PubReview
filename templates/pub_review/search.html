@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load static %}
 <!-- Template filter for paging System -->
 {% load PubReviews_filter %}
 
@@ -110,24 +110,5 @@
 </form>
 {% endblock %}
 {% block script %}
-<script type='text/javascript'>
-$(document).ready(function(){
-    $(".page-link").on('click', function() {
-        $("#page").val($(this).data("page"));
-        $("#searchForm").submit();
-    });
-
-    $("#btn_search").on('click', function() {
-        $("#kw").val($(".kw").val());
-        $("#page").val(1);
-        $("#searchForm").submit();
-    });
-
-    $(".so").on('change', function() {
-        $("#so").val($(this).val());
-        $("#page").val(1);
-        $("#searchForm").submit();
-    });
-});
-</script>
+<script src="{%static 'search.js' %}"></script>
 {% endblock %}

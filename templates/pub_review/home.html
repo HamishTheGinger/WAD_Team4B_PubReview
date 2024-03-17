@@ -1,20 +1,39 @@
 {% extends "base.html" %}
+{% load static %}
+{% block extra_head %}
+    <link rel="stylesheet" type="text/css" href="{% static 'homeStyle.css' %}">
+{% endblock %}
 {% block content %}
 
-{% if top5_pubs %}
-<h2>Top Pubs</h2>
-{% for pub in top5_pubs %}
-    <a href="{% url 'pub_review:pubDetail' pub.id %}">{{ pub.pubName }}</a>
-{% endfor %}
-{% endif %}
-{% if recent_reviews %}
-<h2>Recent Reviews</h2>
-{% for review in recent_reviews %}
-     <a href="{% url 'pub_review:reviewDetail' pub_id=review.pub.id review_id=review.id %}">{{ review.subject }}</a>
-{% endfor %}
-{% endif %}
-    <div id="map">
-    <iframe src="{{mapURL}}" title="Top Pub" width="100%" height="450" frameborder="0" style="border:0" allowfullscreen></iframe>
+<div id="container">
+    <div class="item">
+        <div class="sidebar_component">
+            <div id="pubs">
+                {% if top5_pubs %}
+                    <h5>Top Pubs</h5>
+                    {% for pub in top5_pubs %}
+                        <p><a href="{% url 'pub_review:pubDetail' pub.id %}">{{ pub.pubName }}</a></p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+        <div class="sidebar_component">
+            <div id="reviews">
+                {% if recent_reviews %}
+                    <h5>Recent Reviews</h5>
+                    {% for review in recent_reviews %}
+                        <p><a href="{% url 'pub_review:reviewDetail' pub_id=review.pub.id review_id=review.id %}">{{ review.subject }}</a></p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
     </div>
+    <div class="item">
+        <div id="map">
+                    <iframe src="{{mapURL}}" title="Top Pub" width="100%" height="450" frameborder="0" style="border:0" allowfullscreen></iframe>
+        </div>
+
+    </div>
+</div>
 
 {% endblock %}

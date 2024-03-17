@@ -29,6 +29,7 @@ def populate():
         {'username': 'User5','first_name': 'Charlie', 'last_name': 'Davis', 'password': 'password5', 'email': 'user5@example.com'},
         {'username': 'User6','first_name': 'Eva', 'last_name': 'Wilson', 'password': 'password6', 'email': 'user6@example.com'},
         {'username': 'User7','first_name': 'Frank', 'last_name': 'Miller', 'password': 'password7', 'email': 'user7@example.com'},
+
     ]
     # create pub dictionaries
     pubs_data = [

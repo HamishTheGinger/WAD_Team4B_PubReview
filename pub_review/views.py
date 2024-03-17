@@ -12,7 +12,7 @@ from django.db.models import Q
 # Create your views here.
 
 def index(request):
-    top5_pubs = Pub.objects.order_by('voter')[:5]
+    top5_pubs = Pub.objects.order_by('-voter')[:5]
     recent_reviews= Review.objects.order_by('-create_date')[:5]
     context ={'top5_pubs':top5_pubs, 'recent_reviews':recent_reviews}
 

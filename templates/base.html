@@ -8,11 +8,12 @@
     <link rel="stylesheet" type="text/css" href="{% static 'bootstrap.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
     <title>Pub Reviews</title>
+    {% block extra_head %}{% endblock %}
 </head>
 <body>
 <!----- Navigation Bar ----->
 <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
-    <a class="navbar-brand" href="{% url 'pub_review:index' %}">Pub Reviews</a>
+    <a class="navbar-brand" href="{% url 'pub_review:index' %}">Pub <span>Reviews</span></a>
     <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav"
             aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
