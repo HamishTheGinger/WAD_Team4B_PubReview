@@ -37,6 +37,7 @@ def list_questions(request):
 
     search = request.GET.get("qSearch")
 
+    # If the user has entered a search term, filter based on that term
     if search != None:
      question_list = Question.objects.filter(subject__contains=search)
 
@@ -460,6 +461,7 @@ def showPub_Question(request, pub_id,Pub_Question_id):
     return render(request, 'pub_review/Pub_Question_detail.html',context)
 
 def showUserProfile(request, user_id):
+    # Gathering all of the information needed to display the profile
     user = get_object_or_404(User, pk=user_id)
     userProfile = UserProfile.objects.filter(user=user).get()
     top_5_pubs = FavoritePubs.objects.filter(user=userProfile).get()
@@ -475,7 +477,9 @@ def showUserProfile(request, user_id):
     page_obj_question = paginator_question.get_page(page_question)
     paginator_answer = Paginator(answer_list, 10)
     page_obj_answer = paginator_answer.get_page(page_answer)
-    if(request.user.is_authenticated):
+   
+    #if the user is authenticated pass the user model to check if the user if viewing their own profile, otherwise don't pass the user model
+    if(request.user.is_authenticated): 
         context = {'user':  user, 'review_list':page_obj_review, 'question_list' : page_obj_question, 'answer_list' :page_obj_answer, 'userProfile':userProfile, 'top_5_pubs':top_5_pubs}
     else:
         context = {'review_list':page_obj_review, 'question_list' : page_obj_question, 'answer_list' :page_obj_answer, 'userProfile':userProfile, 'top_5_pubs':top_5_pubs}

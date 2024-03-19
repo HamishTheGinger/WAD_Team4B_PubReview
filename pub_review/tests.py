@@ -30,6 +30,9 @@ def create_profile(user, first_name=None, surname=None, age=None, gender=None):
 
     return user
 
+def create_answer(author, question, content):
+    Answer.objects.create(author=author, question=question, content=content, pub=question.pub, create_date=timezone.now())
+
 class IndexViewTests(TestCase):
 
     def test_index_blank(self):
@@ -77,7 +80,7 @@ class IndexViewTests(TestCase):
         self.assertQuerysetEqual(response.context['recent_reviews'], ["<Review: Amazing Food>"])
         self.assertQuerysetEqual(response.context['top5_pubs'], ["<Pub: White Horse>"]) 
 
-class PubViewTest(TestCase):
+class PubViewTests(TestCase):
 
     def test_pubs_blank_pub(self):
         owner = create_user("Dave")
@@ -139,7 +142,7 @@ class PubViewTest(TestCase):
         self.assertQuerysetEqual(response.context['review_list'], ["<Review: Amazing Food>"]) 
         self.assertQuerysetEqual(response.context['question_list'], ["<Question: How pricy is it>"]) 
 
-class QuestionViewTest(TestCase):
+class QuestionListTests(TestCase):
     
     def test_questions_blank(self):
         response = self.client.get(reverse('pub_review:questions'))
@@ -266,3 +269,54 @@ class UserProfileTests(TestCase):
         self.assertQuerysetEqual(response.context['review_list'], ["<Review: Amazing Food>"])
         self.assertQuerysetEqual(response.context['question_list'], ["<Question: When do you have live music>"])
         self.assertQuerysetEqual(response.context['answer_list'], [])
+
+class QuestionViewTests(TestCase):
+    def test_question_no_answers(self):
+        user = create_user("Sandra")
+        question = create_question("How pricy is it", "I am wondering how pricy the food is?", user)
+
+        response = self.client.get(reverse('pub_review:detail',args=(question.id,)))
+        self.assertEqual(response.status_code, 200)
+
+        self.assertContains(response, "Sandra")
+        self.assertContains(response, "I am wondering how pricy the food is?")
+        self.assertContains(response, "How pricy is it")
+
+        #self.assertQuerysetEqual(response.context['question'], "<Question: How pricy is it>")
+
+    def test_question_answer(self):
+        user = create_user("Sandra")
+        question = create_question("How pricy is it", "I am wondering how pricy the food is?", user)
+
+        user2 = create_user("Alex")
+        answer = create_answer(user2, question, "It is quite expensive, around £15 for a meal, but its good")
+        response = self.client.get(reverse('pub_review:detail',args=(question.id,)))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Sandra")
+        self.assertContains(response, "How pricy is it")
+        self.assertContains(response, "I am wondering how pricy the food is?")
+        self.assertContains(response, "Alex")
+        self.assertContains(response, "It is quite expensive, around £15 for a meal, but its good")
+
+    def test_question_answers(self):
+        user = create_user("Sandra")
+        question = create_question("How pricy is it", "I am wondering how pricy the food is?", user)
+
+        user2 = create_user("Alex")
+        answer = create_answer(user2, question, "It is quite expensive, around £15 for a meal, but its good")
+
+        user3 = create_user("Zara")
+        answer = create_answer(user3, question, "Personally I feel it is overpriced for what you are getting, while the food is nice the portions are small")
+        
+        response = self.client.get(reverse('pub_review:detail',args=(question.id,)))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Sandra")
+        self.assertContains(response, "How pricy is it")
+        self.assertContains(response, "I am wondering how pricy the food is?")
+        self.assertContains(response, "Alex")
+        self.assertContains(response, "It is quite expensive, around £15 for a meal, but its good")
+        self.assertContains(response, "Zara")
+        self.assertContains(response, "Personally I feel it is overpriced for what you are getting, while the food is nice the portions are small")
+

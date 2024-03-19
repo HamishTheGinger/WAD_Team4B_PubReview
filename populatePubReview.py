@@ -22,20 +22,20 @@ def populate():
 
     # create profile dictionaries
     users_data = [
-        {'username': 'User1','first_name': 'John', 'last_name': 'Doe', 'password': 'password1', 'email': 'user1@example.com'},
-        {'username': 'User2','first_name': 'Jane', 'last_name': 'Smith', 'password': 'password2', 'email': 'user2@example.com'},
-        {'username': 'User3','first_name': 'Bob', 'last_name': 'Johnson', 'password': 'password3', 'email': 'user3@example.com'},
-        {'username': 'User4','first_name': 'Alice', 'last_name': 'Brown', 'password': 'password4', 'email': 'user4@example.com'},
-        {'username': 'User5','first_name': 'Charlie', 'last_name': 'Davis', 'password': 'password5', 'email': 'user5@example.com'},
-        {'username': 'User6','first_name': 'Eva', 'last_name': 'Wilson', 'password': 'password6', 'email': 'user6@example.com'},
-        {'username': 'User7','first_name': 'Frank', 'last_name': 'Miller', 'password': 'password7', 'email': 'user7@example.com'},
+        {'username': 'John_D_24','first_name': 'John', 'last_name': 'Doe', 'password': 'password1', 'email': 'user1@example.com'},
+        {'username': 'Jane','first_name': 'Jane', 'last_name': 'Smith', 'password': 'password2', 'email': 'user2@example.com'},
+        {'username': 'JB','first_name': 'Bob', 'last_name': 'Johnson', 'password': 'password3', 'email': 'user3@example.com'},
+        {'username': 'AliceBrown_1973','first_name': 'Alice', 'last_name': 'Brown', 'password': 'password4', 'email': 'user4@example.com'},
+        {'username': 'Charlie_D','first_name': 'Charlie', 'last_name': 'Davis', 'password': 'password5', 'email': 'user5@example.com'},
+        {'username': 'Eva','first_name': 'Eva', 'last_name': 'Wilson', 'password': 'password6', 'email': 'user6@example.com'},
+        {'username': 'FrankTheMiller','first_name': 'Frank', 'last_name': 'Miller', 'password': 'password7', 'email': 'user7@example.com'},
 
     ]
     # create pub dictionaries
     pubs_data = [
         {'owner': users_data[0], 'pub_name': 'Pub 1', 'city': 'Glasgow', 'street_name': '70 Arygle Street', 'postcode': 'G2 8AG'},
         {'owner': users_data[1], 'pub_name': 'Pub 2', 'city': 'Glasgow', 'street_name': '56 Arygle Street', 'postcode': 'G2 8AG'},
-        {'owner': users_data[2], 'pub_name': 'Pub 3', 'city': 'Glasgow', 'street_name': 'University Ave', 'postcode': 'G12 8SP'},
+        {'owner': users_data[2], 'pub_name': 'Glasgow Univeristy Union', 'city': 'Glasgow', 'street_name': '32 University Ave', 'postcode': 'G12 8LX'},
         {'owner': users_data[3], 'pub_name': 'Pub 4', 'city': 'Glasgow', 'street_name': '17 Vinicombe St', 'postcode': 'G12 8SJ'},
         {'owner': users_data[4], 'pub_name': 'Pub 5', 'city': 'Glasgow', 'street_name': 'Byres Rd', 'postcode': 'G12 8QX'},
         {'owner': users_data[5], 'pub_name': 'Pub 6', 'city': 'Glasgow', 'street_name': '106 Arygle Street', 'postcode': ''},
@@ -43,15 +43,15 @@ def populate():
 
     # create Question dictionaries
     questions_data = [
-        {'author': users_data[1], 'pub': pubs_data[0], 'subject': 'Question 1', 'content': 'Content of Question 1'},
-        {'author': users_data[6], 'pub': pubs_data[0], 'subject': 'Question 2', 'content': 'Content of Question 2'},
+        {'author': users_data[1], 'pub': pubs_data[0], 'subject': 'When is there live music', 'content': 'What dates/times do you have live music in the next month or so'},
+        {'author': users_data[6], 'pub': pubs_data[0], 'subject': 'How pricy is it', 'content': 'I want to eat here but I am wondering how expensive the food is, and if it is worth it'},
     ]
 
     # create Answer dictionaries
     answers_data = [
         {'author': users_data[2], 'question': questions_data[0], 'pub': pubs_data[0], 'content': 'Answer to Question 1'},
-        {'author': users_data[3], 'question': questions_data[1], 'pub': pubs_data[0], 'content': 'Answer 1 to Question 2'},
-        {'author': users_data[4], 'question': questions_data[1], 'pub': pubs_data[0], 'content': 'Answer 2 to Question 2'},
+        {'author': users_data[3], 'question': questions_data[1], 'pub': pubs_data[0], 'content': 'It is quite expensive, around £15 for a meal, but its good'},
+        {'author': users_data[4], 'question': questions_data[1], 'pub': pubs_data[0], 'content': 'Personally I feel it is overpriced for what you are getting, while the food is nice the portions are small'},
     ]
 
     # create review dictionaries
@@ -73,7 +73,7 @@ def populate():
         authorInstance = getUserByUsername(question_data['author']['username'])
         pubInstance = getPubByPubname(question_data['pub']['pub_name'])
 
-        create_question(**question_data, authorInstance= authorInstance)
+        create_question(**question_data, authorInstance= authorInstance, pubInstnace=pubInstance)
 
     for answer_data in answers_data:
         authorInstance = getUserByUsername(answer_data['author']['username'])
