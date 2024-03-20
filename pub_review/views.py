@@ -27,7 +27,7 @@ def index(request):
 
         mapURL = "https://www.google.com/maps/embed/v1/place?key={0}&q={1},{2},{3}".format(key,placeData[0],placeData[1],placeData[2])
 
-        context['MapURL'] = mapURL
+        context['mapURL'] = mapURL
 
     return render(request,'pub_review/home.html',context)
 
@@ -269,7 +269,7 @@ def showPub(request,pub_id):
         print("Debugging views.py:ln 268 \n placeData [{}] value = {}".format(counter, placeData[counter]))
         placeData[counter] = placeData[counter].replace(" ", "%20") # maps api uses %20 for spaces
     mapURL = "https://www.google.com/maps/embed/v1/place?key={0}&q={1},{2},{3}".format(key,placeData[0],placeData[1],placeData[2])
-    context['MapURL'] = mapURL
+    context['mapURL'] = mapURL
 
     return render(request,'pub_review/pub_detail.html',context)
 
