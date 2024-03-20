@@ -6,6 +6,7 @@
 {% block content %}
 <!-- Top Heading -->
 <div class="container my-3">
+    <h5>Seach Questions</h5>
     <form action="{% url 'pub_review:questions' %}" method="get">
     <div class="col-4 input-group">
             <input name="qSearch" type="text" class="form-control kw" placeholder="Question Title" value="{{ kw|default_if_none:'' }}">

@@ -21,7 +21,7 @@
     <thead>
     <tr class="text-center thead - dark">
       <th>Number</th>
-      <th style="width:50%" class="text-left">Pub Name</th>
+      <th style="width:40%" class="text-left">Pub Name</th>
       <th>Owner</th>
       <th>Postcode</th>
     </tr>
@@ -45,7 +45,7 @@
             <a href="{% url 'pub_review:userProfile' user_id=pub.owner.id%}">{{ pub.owner.username}}</a>
         </td>
         <td>
-            {{ pub.postcode}}
+            {{ pub.streetName }}
         </td>
         <!-- Question Object End-->
     </tr>
