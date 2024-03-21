@@ -6,7 +6,7 @@ from django.conf.urls.static import static
 
 app_name= 'pub_review'
 urlpatterns = [
-    path('',views.index, name = 'index'),
+    path('',views.index, name ='index'),
 
     # Question and Answer URLs
     path('questions/',views.list_questions,name="questions"),

@@ -14,6 +14,7 @@
                 <button class="btn btn-outline-secondary" type="button" id="btn_search">Search</button>
             </div>
         </div>
+    </form>
   <table class="table">
     <thead>
     <tr class="text-center thead - dark">
@@ -109,6 +110,7 @@
     <a href = "{% url 'pub_review:question_create' %}" class="btn btn-primary">
         Ask a Question
     </a>
+
 </div>
 <form id="searchForm" method="get" action="{% url 'pub_review:questions' %}">
     <input type="hidden" id="kw" name="kw" value="{{ kw|default_if_none:'' }}">
@@ -116,6 +118,7 @@
 </form>
 {% endblock %}
 {% block script %}
+<script src="{%static 'search.js' %}"></script>
 <script src="{%static 'search.js' %}"></script>
 {% endblock %}
 
