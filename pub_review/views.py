@@ -24,7 +24,7 @@ def index(request):
     if top5_pubs.exists():
         placeData = [getattr(top5_pubs[0], 'pubName') , getattr(top5_pubs[0], 'streetName'), getattr(top5_pubs[0], 'city')]  # array of strings, containing pub name, street address, city
         for counter in range (0,3):
-            print("Debugging views.py:ln 25 \n placeData [{}] value = {}".format(counter, placeData[counter]))
+            #print("Debugging views.py:ln 25 \n placeData [{}] value = {}".format(counter, placeData[counter]))
             placeData[counter] = placeData[counter].replace(" ", "%20") # maps api uses %20 for spaces
 
         mapURL = "https://www.google.com/maps/embed/v1/place?key={0}&q={1},{2},{3}".format(key,placeData[0],placeData[1],placeData[2])
@@ -268,7 +268,7 @@ def showPub(request,pub_id):
     placeData = [getattr(pub, 'pubName') , getattr(pub, 'streetName'), getattr(pub, 'city')]  # array of strings, containing pub name, street address, city
 
     for counter in range (0,3):
-        print("Debugging views.py:ln 268 \n placeData [{}] value = {}".format(counter, placeData[counter]))
+        #print("Debugging views.py:ln 268 \n placeData [{}] value = {}".format(counter, placeData[counter]))
         placeData[counter] = placeData[counter].replace(" ", "%20") # maps api uses %20 for spaces
     mapURL = "https://www.google.com/maps/embed/v1/place?key={0}&q={1},{2},{3}".format(key,placeData[0],placeData[1],placeData[2])
     context['mapURL'] = mapURL
