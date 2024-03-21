@@ -19,6 +19,8 @@ def index(request):
     # Google Maps Integration
     key = "AIzaSyB5Prlm7hNvW0P2uxPQ71FKdZUsAFHhoUM"
 
+    context["top_pub"] = top5_pubs[0]
+
     if top5_pubs.exists():
         placeData = [getattr(top5_pubs[0], 'pubName') , getattr(top5_pubs[0], 'streetName'), getattr(top5_pubs[0], 'city')]  # array of strings, containing pub name, street address, city
         for counter in range (0,3):
