@@ -8,11 +8,11 @@ from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import auth,messages
-from django.db.models import Q
+from django.db.models import Q, Count
 # Create your views here.
 
 def index(request):
-    top5_pubs = Pub.objects.order_by('-voter')[:5]
+    top5_pubs = Pub.objects.order_by(Count("-voters"))[:5]
     recent_reviews= Review.objects.order_by('-create_date')[:5]
     context ={'top5_pubs':top5_pubs, 'recent_reviews':recent_reviews}
 
