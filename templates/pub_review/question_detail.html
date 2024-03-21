@@ -59,6 +59,8 @@
 <!-- Answer Object End -->
 
 <!-- Post Answer -->
+<h5>Add Answer</h5>
+{% if user.is_authenticated %}
   <form action="{% url 'pub_review:answer_create' question.id %}" method = 'post' class ="my-3">
     {% csrf_token %}
 
@@ -75,12 +77,15 @@
     {% endif %}
 
 <!-- Function End -->
-    <h5>Add Answer</h5>
     <div class = "form-group">
       <textarea name="content" id="content" class="form-control" rows="10"></textarea>
     </div>
     <input type="submit" value="Submit" class="btn btn-primary">
   </form>
+  {% else %}
+  <div class = "form-group">
+    <textarea name="content" id="content" class="form-control" placeholder="Login/Signup to add answer" disabled rows="10"></textarea>
+  </div>  {% endif %}
 </div>
 {% endblock %}
 {% block script %}
