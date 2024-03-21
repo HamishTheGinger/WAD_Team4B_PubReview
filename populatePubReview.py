@@ -44,26 +44,26 @@ def populate():
 
     # create Question dictionaries
     questions_data = [
-        {'author': users_data[0], 'pub': pubs_data[0], 'subject': 'Happy hour?', 'content': 'Does The Pot Still have a happy hour? If so, what are the timings and deals?'},
-        {'author': users_data[0], 'pub': pubs_data[1], 'subject': 'Live Music Schedule', 'content': 'Does Moskito have live music on weekends? Looking for a place with good music.'},
-        {'author': users_data[1], 'pub': pubs_data[2], 'subject': 'Food Menu', 'content': 'What kind of food does Glasgow University Union serve? Any recommendations?'},
-        {'author': users_data[1], 'pub': pubs_data[3], 'subject': 'Book Club Events', 'content': 'Does Hillhead Book Club host any book-related events or readings?'},
-        {'author': users_data[2], 'pub': pubs_data[4], 'subject': 'Accessibility', 'content': 'Is Òran Mór wheelchair accessible? Planning to visit with a friend who has mobility issues.'},
-        {'author': users_data[2], 'pub': pubs_data[5], 'subject': 'Reservation Policy', 'content': 'Does The Alchemist Glasgow take reservations? Planning a special occasion and want to make sure we can get a table.'},
-        {'author': users_data[3], 'pub': pubs_data[0], 'subject': 'Whisky Tasting Events', 'content': 'Does The Pot Still host any whisky tasting events? Would love to learn more about Scotch whisky.'},
-        {'author': users_data[3], 'pub': pubs_data[1], 'subject': 'Happy Hour Deals', 'content': 'What are the happy hour deals at Moskito? Looking for a place with good drink specials.'},
-        {'author': users_data[4], 'pub': pubs_data[2], 'subject': 'Student Discounts', 'content': 'Does Glasgow University Union offer any discounts for students? Planning to visit with a group of friends on a budget.'},
-        {'author': users_data[4], 'pub': pubs_data[3], 'subject': 'Private Events', 'content': 'Is it possible to book a private event at Hillhead Book Club? Interested in hosting a party for a special occasion.'},
-        {'author': users_data[5], 'pub': pubs_data[4], 'subject': 'Outdoor Seating', 'content': 'Does Òran Mór have outdoor seating? Hoping to enjoy the nice weather while sipping on a drink.'},
-        {'author': users_data[5], 'pub': pubs_data[5], 'subject': 'Signature Cocktails', 'content': 'What are the signature cocktails at The Alchemist Glasgow? Any must-try drinks?'},
-        {'author': users_data[6], 'pub': pubs_data[0], 'subject': 'Trivia Nights', 'content': 'Does The Pot Still host trivia nights? Looking for a fun activity to do with friends.'},
-        {'author': users_data[6], 'pub': pubs_data[1], 'subject': 'Live Music Genre', 'content': 'What genres of music are typically played at Moskito? Interested in checking out some local bands.'},
-        {'author': users_data[6], 'pub': pubs_data[2], 'subject': 'Membership Benefits', 'content': 'What are the benefits of becoming a member of Glasgow University Union? Is it worth signing up?'},
+        {'author': users_data[5], 'pub': pubs_data[0], 'subject': 'Happy hour?', 'content': 'Does The Pot Still have a happy hour? If so, what are the timings and deals?'},
+        {'author': users_data[4], 'pub': pubs_data[1], 'subject': 'Live Music Schedule', 'content': 'Does Moskito have live music on weekends? Looking for a place with good music.'},
+        {'author': users_data[0], 'pub': pubs_data[2], 'subject': 'Food Menu', 'content': 'What kind of food does Glasgow University Union serve? Any recommendations?'},
+        {'author': users_data[3], 'pub': pubs_data[3], 'subject': 'Book Club Events', 'content': 'Does Hillhead Book Club host any book-related events or readings?'},
+        {'author': users_data[1], 'pub': pubs_data[4], 'subject': 'Accessibility', 'content': 'Is Òran Mór wheelchair accessible? Planning to visit with a friend who has mobility issues.'},
+        {'author': users_data[1], 'pub': pubs_data[5], 'subject': 'Reservation Policy', 'content': 'Does The Alchemist Glasgow take reservations? Planning a special occasion and want to make sure we can get a table.'},
+        {'author': users_data[5], 'pub': pubs_data[0], 'subject': 'Whisky Tasting Events', 'content': 'Does The Pot Still host any whisky tasting events? Would love to learn more about Scotch whisky.'},
+        {'author': users_data[6], 'pub': pubs_data[1], 'subject': 'Happy Hour Deals', 'content': 'What are the happy hour deals at Moskito? Looking for a place with good drink specials.'},
+        {'author': users_data[3], 'pub': pubs_data[2], 'subject': 'Student Discounts', 'content': 'Does Glasgow University Union offer any discounts for students? Planning to visit with a group of friends on a budget.'},
+        {'author': users_data[2], 'pub': pubs_data[3], 'subject': 'Private Events', 'content': 'Is it possible to book a private event at Hillhead Book Club? Interested in hosting a party for a special occasion.'},
+        {'author': users_data[3], 'pub': pubs_data[4], 'subject': 'Outdoor Seating', 'content': 'Does Òran Mór have outdoor seating? Hoping to enjoy the nice weather while sipping on a drink.'},
+        {'author': users_data[6], 'pub': pubs_data[5], 'subject': 'Signature Cocktails', 'content': 'What are the signature cocktails at The Alchemist Glasgow? Any must-try drinks?'},
+        {'author': users_data[4], 'pub': pubs_data[0], 'subject': 'Trivia Nights', 'content': 'Does The Pot Still host trivia nights? Looking for a fun activity to do with friends.'},
+        {'author': users_data[2], 'pub': pubs_data[1], 'subject': 'Live Music Genre', 'content': 'What genres of music are typically played at Moskito? Interested in checking out some local bands.'},
+        {'author': users_data[0], 'pub': pubs_data[2], 'subject': 'Membership Benefits', 'content': 'What are the benefits of becoming a member of Glasgow University Union? Is it worth signing up?'},
     ]
 
     # create Answer dictionaries
     answers_data = [
-         {'author': users_data[0], 'question': questions_data[0], 'pub': pubs_data[0], 'content': 'Yes, The Pot Still has a happy hour from 5pm to 7pm every weekday. They offer discounts on selected drinks.'},
+        {'author': users_data[0], 'question': questions_data[0], 'pub': pubs_data[0], 'content': 'Yes, The Pot Still has a happy hour from 5pm to 7pm every weekday. They offer discounts on selected drinks.'},
         {'author': users_data[0], 'question': questions_data[1], 'pub': pubs_data[1], 'content': 'Yes, Moskito often has live music on weekends. Check their website or social media for the schedule.'},
         {'author': users_data[1], 'question': questions_data[2], 'pub': pubs_data[2], 'content': 'Glasgow University Union serves a variety of pub-style food, including burgers, pizzas, and snacks. The nachos are particularly popular.'},
         {'author': users_data[1], 'question': questions_data[3], 'pub': pubs_data[3], 'content': 'Yes, Hillhead Book Club hosts book-related events such as author readings and book club meetings. Check their events calendar for upcoming activities.'},
