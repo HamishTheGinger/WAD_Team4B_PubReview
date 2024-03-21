@@ -99,9 +99,9 @@ def create_user_profile(username, password, email, first_name, last_name, image,
     profile = UserProfile.objects.get_or_create(user=userInstance, firstName=first_name, lastName=last_name, sex=sex, age=age, nationality=nationality)[0]
     
     # get path to pub image files
-    image_dir = os.path.join("/population_pictures/profile_images", image)
+    image_dir = os.path.join(settings.MEDIA_DIR, "/population_file_pictures/profile_images/")
 
-    with open(image_dir, 'rb') as f:
+    with open(os.path.join(image_dir, image), 'rb') as f:
         # assign image to Profile.picture field
         profile.picture.save(image, File(f)) # image variable is name of picture
     
@@ -116,9 +116,9 @@ def create_pub(owner, pub_name, city, street_name, postcode, image, ownerInstanc
     pub = Pub.objects.get_or_create(owner=ownerInstance, pubName=pub_name, city=city, streetName=street_name, postcode=postcode)[0]
 
     # get path to pub image files
-    image_dir = os.path.join("/population_pictures/pub_images", image)
+    image_dir = os.path.join(settings.MEDIA_DIR, "/population_pictures/pub_images")
 
-    with open(image_dir, 'rb') as f:
+    with open(os.path.join(image_dir, image), 'rb') as f:
         # assign image to Pub.picture field
         pub.picture.save(image, File(f)) # image variable is name of picture
 
