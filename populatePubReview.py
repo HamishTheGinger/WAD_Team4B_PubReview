@@ -128,6 +128,16 @@ def populate():
 
         create_review(**review_data, authorInstance = authorInstance, pubInstance=pubInstance)
 
+    # adding reccomendations
+    reccommend("Moskito", "Charlie_D")
+    reccommend("Moskito", "JB")
+
+    reccommend("Òran Mór", "FrankTheMiller")
+    reccommend("Òran Mór", "John_D_24")
+    reccommend("Òran Mór", "Jane")
+
+
+
 # Populate Database tables
 def create_user_profile(username, password, email, first_name, last_name, image, sex=None, age=None, nationality=None):
     # creating user instance
@@ -188,7 +198,13 @@ def create_review(author, pub, subject, content, authorInstance, pubInstance=Non
     review.save()
     return review
 
-# helper function, returns user object instance matching username passed
+
+# helper functions, 
+# adds a recommend from given user to given pub
+def reccommend(pub,username):
+    getPubByPubname(pub).voter.add(getUserByUsername(username))
+
+#returns user object instance matching username passed
 def getUserByUsername(usernameString):
     try:
         userObject = User.objects.get(username = usernameString)
