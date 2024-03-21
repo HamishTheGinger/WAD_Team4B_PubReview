@@ -82,18 +82,18 @@ def populate():
 
     # create review dictionaries
     reviews_data = [        
-        {'author': users_data[0], 'pub': pubs_data[1], 'subject': 'Great Atmosphere', 'content': 'Moskito has a great atmosphere with dim lighting and cozy seating. Perfect for a night out.'},
+        {'author': users_data[0], 'pub': pubs_data[1], 'subject': 'Great Atmosphere', 'content': 'Moskito has a great atmosphere with dim lighting and cozy seating. Perfect for a night out.', 'image':"review3moskito.jpg"},
         {'author': users_data[0], 'pub': pubs_data[2], 'subject': 'Fun Nights Out', 'content': 'It is always buzzing with activity. Whether it is a themed party or karaoke night, there is always something fun happening.'},
         {'author': users_data[1], 'pub': pubs_data[3], 'subject': 'Quirky Decor', 'content': 'The decor at Hillhead Book Club is quirky and eclectic, with bookshelves lining the walls and mismatched furniture. Love the unique vibe.'},
-        {'author': users_data[1], 'pub': pubs_data[4], 'subject': 'Beautiful Venue', 'content': 'Òran Mór is housed in a beautiful building with stunning architecture. The interior is just as impressive, with high ceilings and ornate details.'},
+        {'author': users_data[1], 'pub': pubs_data[4], 'subject': 'Beautiful Venue', 'content': 'Òran Mór is housed in a beautiful building with stunning architecture. The interior is just as impressive, with high ceilings and ornate details.', 'image':"review1OranMor.jpg"},
         {'author': users_data[2], 'pub': pubs_data[5], 'subject': 'Impeccable Service', 'content': 'The service at The Alchemist Glasgow is impeccable. The staff is attentive and knowledgeable, making for a memorable dining experience.'},
         {'author': users_data[2], 'pub': pubs_data[0], 'subject': 'Authentic Pub', 'content': 'The Pot Still feels like stepping into a traditional Scottish pub. From the whisky selection to the decor, everything exudes authenticity.'},
         {'author': users_data[3], 'pub': pubs_data[1], 'subject': 'Creative Cocktails', 'content': 'The cocktails at Moskito are both creative and delicious. The mixologists really know their craft.'},
         {'author': users_data[3], 'pub': pubs_data[2], 'subject': 'Nostalgic Vibes', 'content': 'Glasgow University Union brings back fond memories of my university days. It is a nostalgic trip every time I visit.'},
-        {'author': users_data[4], 'pub': pubs_data[3], 'subject': 'Hidden Gem', 'content': 'Hillhead Book Club is a hidden gem in Glasgow\'s West End. It is a bit off the beaten path, but well worth seeking out.'},
-        {'author': users_data[4], 'pub': pubs_data[4], 'subject': 'Scenic Location', 'content': 'The location at Òran Mór offers scenic views of the bustling street below. It is a prime spot for people-watching.'},
+        {'author': users_data[4], 'pub': pubs_data[3], 'subject': 'Hidden Gem', 'content': 'Hillhead Book Club is a hidden gem in Glasgow\'s West End. It is a bit off the beaten path, but well worth seeking out.', 'image':"review5HillheadBC.jpg"},
+        {'author': users_data[4], 'pub': pubs_data[4], 'subject': 'Scenic Location', 'content': 'The location at Òran Mór offers scenic views of the bustling street below. It is a prime spot for people-watching.', 'image':"review2OranMor.jpg"},
         {'author': users_data[5], 'pub': pubs_data[5], 'subject': 'Innovative Drinks', 'content': 'The Alchemist Glasgow is known for its innovative drinks that push the boundaries of mixology. Each cocktail is a work of art.'},
-        {'author': users_data[5], 'pub': pubs_data[0], 'subject': 'Whisky Paradise', 'content': 'The Pot Still is a whisky lover\'s paradise. With shelves lined with bottles from floor to ceiling, there is something for every palate.'},
+        {'author': users_data[5], 'pub': pubs_data[0], 'subject': 'Whisky Paradise', 'content': 'The Pot Still is a whisky lover\'s paradise. With shelves lined with bottles from floor to ceiling, there is something for every palate.', 'image':"review5thePotStill.jpg"},
         {'author': users_data[6], 'pub': pubs_data[1], 'subject': 'Lively Ambiance', 'content': 'Moskito has a lively ambiance with upbeat music and friendly patrons. It is always a good time here.'},
         {'author': users_data[6], 'pub': pubs_data[2], 'subject': 'Student Hangout', 'content': 'Glasgow University Union is the ultimate student hangout. Whether you are grabbing a pint between classes or attending a society event, it is a hub of activity.'},
         {'author': users_data[6], 'pub': pubs_data[3], 'subject': 'Cozy Spot', 'content': 'Hillhead Book Club\'s cozy atmosphere makes it the perfect spot to escape the cold Glasgow weather. Curl up with a book and a hot drink for the ultimate comfort.'}
@@ -174,8 +174,17 @@ def create_answer(author, question, pub, content,authorInstance, questionInstanc
     answer.save()
     return answer
 
-def create_review(author, pub, subject, content, authorInstance, pubInstance=None):
+def create_review(author, pub, subject, content, authorInstance, pubInstance=None, image=""):
     review = Review.objects.get_or_create(author=authorInstance, pub=pubInstance, subject=subject, content=content, create_date=timezone.now())[0]
+
+    if image != "":
+        # get path to pub image files
+        image_dir = os.path.join(settings.STATIC_DIR, "images/population_file_images/review_images")
+
+        with open(os.path.join(image_dir, image), 'rb') as f:
+            # assign image to Pub.picture field
+            review.picture.save(image, File(f)) # image variable is name of picture
+
     review.save()
     return review
 
