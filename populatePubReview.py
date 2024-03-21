@@ -37,7 +37,7 @@ def populate():
         {'owner': users_data[0], 'pub_name': 'The Pot Still', 'city': 'Glasgow', 'street_name': '154 Hope St', 'postcode': 'G2 2TH', 'image':'potStill.jpg'},
         {'owner': users_data[1], 'pub_name': 'Moskito', 'city': 'Glasgow', 'street_name': '196 Bath St', 'postcode': 'G2 4HG', 'image':'moskito.jpg'},
         {'owner': users_data[2], 'pub_name': 'Glasgow Univeristy Union', 'city': 'Glasgow', 'street_name': '32 University Ave', 'postcode': 'G12 8LX', 'image':'GUU.jpg'},
-        {'owner': users_data[3], 'pub_name': 'Hillhead Book Club', 'city': 'Glasgow', 'street_name': '17 Vinicombe St', 'postcode': 'G12 8SJ', 'image':'HillHeadBC.jpg'},
+        {'owner': users_data[3], 'pub_name': 'Hillhead Book Club', 'city': 'Glasgow', 'street_name': '17 Vinicombe St', 'postcode': 'G12 8SJ', 'image':'HillheadBC.jpg'},
         {'owner': users_data[4], 'pub_name': 'Òran Mór', 'city': 'Glasgow', 'street_name': 'Byres Rd', 'postcode': 'G12 8QX', 'image':'oranMor.jpg'},
         {'owner': users_data[5], 'pub_name': 'The Alchemist Glasgow', 'city': 'Glasgow', 'street_name': 'Unit 2, George House, George Square', 'postcode': 'G2 1EH', 'image':'alchemist.jpg'},
     ]
