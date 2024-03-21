@@ -31,3 +31,7 @@
     margin:50px;
     width:200%
 }
+
+.review-box{
+    display: none;
+}
