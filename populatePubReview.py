@@ -8,6 +8,8 @@ from pub_review.models import User, UserProfile, Answer, Question, Pub, Favorite
 from datetime import datetime
 from django.utils import timezone
 from pytz import utc
+from django.core.files import File
+from team4b_pub_review import settings
 
 
 
@@ -22,23 +24,22 @@ def populate():
 
     # create profile dictionaries
     users_data = [
-        {'username': 'John_D_24','first_name': 'John', 'last_name': 'Doe', 'password': 'password1', 'email': 'user1@example.com'},
-        {'username': 'Jane','first_name': 'Jane', 'last_name': 'Smith', 'password': 'password2', 'email': 'user2@example.com'},
-        {'username': 'JB','first_name': 'Bob', 'last_name': 'Johnson', 'password': 'password3', 'email': 'user3@example.com'},
-        {'username': 'AliceBrown_1973','first_name': 'Alice', 'last_name': 'Brown', 'password': 'password4', 'email': 'user4@example.com'},
-        {'username': 'Charlie_D','first_name': 'Charlie', 'last_name': 'Davis', 'password': 'password5', 'email': 'user5@example.com'},
-        {'username': 'Eva','first_name': 'Eva', 'last_name': 'Wilson', 'password': 'password6', 'email': 'user6@example.com'},
-        {'username': 'FrankTheMiller','first_name': 'Frank', 'last_name': 'Miller', 'password': 'password7', 'email': 'user7@example.com'},
-
+        {'username': 'John_D_24','first_name': 'John', 'last_name': 'Doe', 'password': 'password1', 'email': 'user1@example.com', 'image':'johnD.jpg'},
+        {'username': 'Jane','first_name': 'Jane', 'last_name': 'Smith', 'password': 'password2', 'email': 'user2@example.com', 'image':'JS.jpg'},
+        {'username': 'JB','first_name': 'Bob', 'last_name': 'Johnson', 'password': 'password3', 'email': 'user3@example.com', 'image':'JB.jpg'},
+        {'username': 'AliceBrown_1973','first_name': 'Alice', 'last_name': 'Brown', 'password': 'password4', 'email': 'user4@example.com', 'image':'AliceB.jpg'},
+        {'username': 'Charlie_D','first_name': 'Charlie', 'last_name': 'Davis', 'password': 'password5', 'email': 'user5@example.com', 'image':'CharlieD.jpg'},
+        {'username': 'Eva','first_name': 'Eva', 'last_name': 'Wilson', 'password': 'password6', 'email': 'user6@example.com', 'image':'EvaW.jpg'},
+        {'username': 'FrankTheMiller','first_name': 'Frank', 'last_name': 'Miller', 'password': 'password7', 'email': 'user7@example.com', 'image':'FrankTM.jpg'},
     ]
     # create pub dictionaries
     pubs_data = [
-        {'owner': users_data[0], 'pub_name': 'Pub 1', 'city': 'Glasgow', 'street_name': '70 Arygle Street', 'postcode': 'G2 8AG'},
-        {'owner': users_data[1], 'pub_name': 'Pub 2', 'city': 'Glasgow', 'street_name': '56 Arygle Street', 'postcode': 'G2 8AG'},
-        {'owner': users_data[2], 'pub_name': 'Glasgow Univeristy Union', 'city': 'Glasgow', 'street_name': '32 University Ave', 'postcode': 'G12 8LX'},
-        {'owner': users_data[3], 'pub_name': 'Pub 4', 'city': 'Glasgow', 'street_name': '17 Vinicombe St', 'postcode': 'G12 8SJ'},
-        {'owner': users_data[4], 'pub_name': 'Pub 5', 'city': 'Glasgow', 'street_name': 'Byres Rd', 'postcode': 'G12 8QX'},
-        {'owner': users_data[5], 'pub_name': 'Pub 6', 'city': 'Glasgow', 'street_name': '106 Arygle Street', 'postcode': ''},
+        {'owner': users_data[0], 'pub_name': 'The Pot Still', 'city': 'Glasgow', 'street_name': '154 Hope St', 'postcode': 'G2 2TH', 'image':'potStill.jpg'},
+        {'owner': users_data[1], 'pub_name': 'Moskito', 'city': 'Glasgow', 'street_name': '196 Bath St', 'postcode': 'G2 4HG', 'image':'moskito.jpg'},
+        {'owner': users_data[2], 'pub_name': 'Glasgow Univeristy Union', 'city': 'Glasgow', 'street_name': '32 University Ave', 'postcode': 'G12 8LX', 'image':'GUU.jpg'},
+        {'owner': users_data[3], 'pub_name': 'Hillhead Book Club', 'city': 'Glasgow', 'street_name': '17 Vinicombe St', 'postcode': 'G12 8SJ', 'image':'HillHeadBC.jpg'},
+        {'owner': users_data[4], 'pub_name': 'Òran Mór', 'city': 'Glasgow', 'street_name': 'Byres Rd', 'postcode': 'G12 8QX', 'image':'oranMor.jpg'},
+        {'owner': users_data[5], 'pub_name': 'The Alchemist Glasgow', 'city': 'Glasgow', 'street_name': 'Unit 2, George House, George Square', 'postcode': 'G2 1EH', 'image':'alchemist.jpg'},
     ]
 
     # create Question dictionaries
@@ -89,19 +90,38 @@ def populate():
         create_review(**review_data, authorInstance = authorInstance, pubInstance=pubInstance)
 
 # Populate Database tables
-def create_user_profile(username, password, email, first_name, last_name, sex=None, age=None, nationality=None):
-    # don't know how to set User model variables
+def create_user_profile(username, password, email, first_name, last_name, image, sex=None, age=None, nationality=None):
+    # creating user instance
     userInstance = User.objects.create_user(username=username, password=password, email=email)
     userInstance.save()
+    
+    # creating user profile 
     profile = UserProfile.objects.get_or_create(user=userInstance, firstName=first_name, lastName=last_name, sex=sex, age=age, nationality=nationality)[0]
+    
+    # get path to pub image files
+    image_dir = os.path.join("/population_pictures/profile_images", image)
+
+    with open(image_dir, 'rb') as f:
+        # assign image to Profile.picture field
+        profile.picture.save(image, File(f)) # image variable is name of picture
+    
     profile.save()
+
     favPub = FavoritePubs.objects.get_or_create(user=profile)
     #favPub.save()
 
     return profile
 
-def create_pub(owner, pub_name, city, street_name, postcode, ownerInstance):
+def create_pub(owner, pub_name, city, street_name, postcode, image, ownerInstance):
     pub = Pub.objects.get_or_create(owner=ownerInstance, pubName=pub_name, city=city, streetName=street_name, postcode=postcode)[0]
+
+    # get path to pub image files
+    image_dir = os.path.join("/population_pictures/pub_images", image)
+
+    with open(image_dir, 'rb') as f:
+        # assign image to Pub.picture field
+        pub.picture.save(image, File(f)) # image variable is name of picture
+
     pub.save()
     return pub
 
