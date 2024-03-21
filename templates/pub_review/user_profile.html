@@ -4,7 +4,7 @@
 {% block content %}
 <div class="container white-box">
       <div class="row">
-        <div class="col-md-8 profile-simple">
+        <div class="col-md-4 profile-simple text-center">
           <div class="d-flex">
             <div class="flex-shrink-0">
                 <h3>{{ userProfile.firstName|default_if_none:user.username}} {{ userProfile.lastName|default_if_none:''}}</h3>
@@ -16,7 +16,7 @@
             </div>
           </div>
         </div>
-        <div class="col-md-4 border-left">
+        <div class="col-md-4 border-left text-center">
           <div class="row profile-detail">
             <div class="col-6">
                 <h3>Gender</h3>
@@ -30,17 +30,23 @@
                 <h3>Nationality</h3>
                 <p>{{ userProfile.nationality }}</p>
             </div>
-            <div class="col-6">
+
+          </div>
+        </div>
+
+        <div class="col-md-4 border-left text-center">
+            <div class="row profile-detail">
+            <div class="col-8">
                 <h3>Top 5 Pubs</h3>
                 <p>{{ top_5_pubs.pub1 }}</p>
                 <p>{{ top_5_pubs.pub2 }}</p>
                 <p>{{ top_5_pubs.pub3 }}</p>
                 <p>{{ top_5_pubs.pub4 }}</p>
                 <p>{{ top_5_pubs.pub5 }}</p>
-
             </div>
-          </div>
+            </div>
         </div>
+
       </div>
       <div class="row">
           <div class="container my-3">
